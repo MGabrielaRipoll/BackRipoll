@@ -1,47 +1,71 @@
 
-
 import { Router } from 'express';
 import { Cart } from '../carts.js';
 
 const router = Router();
 
-// Ruta para  crear un carrito
-
-router.post("/", async (req,res) => {
-    const { pid } = req.body
+router.get("/", async (req, res) => {
     try {
-        const cart = await Cart.crearCart( +pid );
-        res.status(200).json({ message: "Cart found", cart });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-})
+        const carts = await Cart.getCartList();
 
-// Ruta para obtener un carrito por su ID
+        if (!carts || carts.length === 0) {
+            return res.status(404).json({ message: "No carts found" });
+        }
+
+        res.status(200).json({ message: "Carts found", carts });
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+router.post("/", async (req, res) => {
+    const { pid } = req.body;
+
+    if (!pid) {
+        return res.status(400).json({ message: "Product ID is required" });
+    }
+
+    try {
+        const cart = await Cart.createCart(pid);
+        res.status(201).json({ message: "Cart created", cart });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 router.get("/:cid", async (req, res) => {
     const { cid } = req.params;
+
     try {
         const cart = await Cart.getCartById(+cid);
 
         if (!cart) {
-        return res.status(404).json({ message: "Cart not found with the provided ID" });
+            return res.status(404).json({ message: "Cart not found" });
         }
 
         res.status(200).json({ message: "Cart found", cart });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
 
-// Ruta para agregar un producto al carrito
 router.post("/:cid/product/:pid", async (req, res) => {
     const { cid, pid } = req.params;
 
     try {
         const response = await Cart.addProductCart(+cid, +pid);
-        res.status(200).json({ message: "Product added", cart: response });
+
+        if (!response) {
+            return res.status(404).json({ message: "Cart not found" });
+        }
+
+        res.status(200).json({ message: "Product added to cart", cart: response });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
 

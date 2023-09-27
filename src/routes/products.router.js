@@ -63,8 +63,8 @@ router.delete("/:pid", async (req, res) => {
     });
 router.put("/:pid", async (req, res) => {
     const { pid } = req.params;
+    const { campo, valor } = req.body 
     try {
-        const { campo, valor } = req.body 
         console.log(campo,valor);
         const response = await Manager.updateProduct(+pid, campo, valor);
         if (!response) {
