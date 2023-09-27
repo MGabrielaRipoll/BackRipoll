@@ -19,27 +19,23 @@ class productManager {
     async addProduct(producto) {
         try {
             const products = await this.getProductList();
-            const { title, description, price, thumbnail, code, stock } = producto;
+            const { title, description, price, thumbnail, code, stock, status, category } = producto;
             const productoCargado = products.some((product) => product.code === code);
 
             if (productoCargado) {
                 console.log("El código de producto que intenta cargar ya existe");
                 return;
             }
-
-            if (!title || !description || !price || !thumbnail || !code || stock === undefined) {
-                console.log("Para agregar un producto debe completar todos los campos");
-                return;
-            }
-
             let id;
             if (!products.length) {
                 id = 1;
             } else {
                 id = products[products.length - 1].id + 1;
             }
-            products.push({ id, ...producto });
+            let newProduct = {id, ...producto, status: true}
+            products.push(newProduct);
             await fs.promises.writeFile(path, JSON.stringify(products));
+            return newProduct;
         } catch (error) {
             return error;
         }
@@ -67,6 +63,7 @@ class productManager {
             const products = await this.getProductList();
             const productsFiltrados = products.filter((product) => product.id !== id);
             await fs.promises.writeFile(path, JSON.stringify(productsFiltrados));
+            return products;
         } catch (error) {
             return error;
         }
@@ -75,13 +72,20 @@ class productManager {
         try {
             const products = await this.getProductList();
     
-            products.forEach((product, index) => {
+            products.forEach((product) => {
                 if (product.id === id) {
-                    product[campo] = valor;
+                    if (campo in product) {
+                        product[campo] = valor;
+                    } else {
+                        product[campo] = valor;
+                    }
+                } else {
+                    return error;
                 }
             });
-
+            console.log(products);
             await fs.promises.writeFile(path, JSON.stringify(products));
+            return products
     
         } catch (error) {
             return error;
