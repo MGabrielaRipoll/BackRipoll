@@ -6,7 +6,7 @@ const router = Router();
 
 router.get("/", async (req, res) => {
     try {
-        const carts = await Cart.getCartList();
+        const carts = await Cart.getCartsList();
 
         if (!carts || carts.length === 0) {
             return res.status(404).json({ message: "No carts found" });
