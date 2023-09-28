@@ -48,24 +48,31 @@ class Carts {
     }
 
     async addProductCart(cid, pid) {
+        try {
+            const carts = await this.getCartsList();
+            const cart = carts.find((c) => c.id === cid);
+        
+            if (!cart) {
+                throw new Error("Cart not found");
+            }
 
-        const cart = await this.getCartById(cid);
-        console.log(cart);
-        if (!cart) {
-        throw new Error("There is no cart with this id");
-        }   
-        const productIndex = cart.products.findIndex(
-        (p) => p.product === pid
-        );
-        if (productIndex === -1) {
-        const newProduct = { product: pid, quantity: 1 };
-        cart.products.push(newProduct);
-        } else {
-        cart.products[productIndex].quantity++;
+            const productIndex = cart.products.findIndex((p) => p.product === pid);
+
+            if (productIndex === -1) {
+                const newProduct = { product: pid, quantity: 1 };
+                cart.products.push(newProduct);
+            } else {
+                cart.products[productIndex].quantity++;
+            }
+
+            await promises.writeFile(path, JSON.stringify(carts));
+        } 
+        catch (error) {
+            console.error(`Error adding product to cart: ${error.message}`);
+            throw error;
         }
-        await promises.writeFile(path, JSON.stringify(cart));
-
     }
+
 }
 
 export const Cart = new Carts();
