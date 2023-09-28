@@ -20,14 +20,9 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-    const { pid } = req.body;
-
-    if (!pid) {
-        return res.status(400).json({ message: "Product ID is required" });
-    }
 
     try {
-        const cart = await Cart.createCart(pid);
+        const cart = await Cart.createCart();
         res.status(201).json({ message: "Cart created", cart });
     } catch (error) {
         console.error(error);

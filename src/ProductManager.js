@@ -67,33 +67,24 @@ class productManager {
         } catch (error) {
             return error;
         }
+    
     }
-    async updateProduct(id, campo, valor) {
+    async updateProduct(id, obj) {
         try {
-            const products = await this.getProductList();
-    
-            products.forEach((product) => {
-                if (product.id === id) {
-                    if (campo in product) {
-                        product[campo] = valor;
-                    } else {
-                        product[campo] = valor;
-                    }
-                } else {
-                    return error;
-                }
-            });
-            console.log(products);
-            await fs.promises.writeFile(path, JSON.stringify(products));
-            return products
-    
+            const products = await this.getProducts({});
+            const index = products.findIndex((u) => u.id === id);
+            if     (index === -1) {
+            return null;
+            }
+        const updateProduct = { ...products[index], ...obj };
+        products.splice(index, 1, updateProduct);
+        await promises.writeFile(path, JSON.stringify(products));
+        return updateProduct;
         } catch (error) {
             return error;
         }
     }
-    
 }
-
 export const Manager = new productManager();
 
 // const producto1 = new productManager();
