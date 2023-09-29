@@ -52,7 +52,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
 
     try {
         const response = await Cart.addProductCart(+cid, +pid);
-
+        console.log(response);
         if (!response) {
             return res.status(404).json({ message: "Cart not found" });
         }

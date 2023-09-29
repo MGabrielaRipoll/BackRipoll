@@ -51,6 +51,7 @@ class Carts {
         try {
             const carts = await this.getCartsList();
             const cart = carts.find((c) => c.id === cid);
+            console.log(cart);
         
             if (!cart) {
                 throw new Error("Cart not found");
@@ -66,6 +67,7 @@ class Carts {
             }
 
             await promises.writeFile(path, JSON.stringify(carts));
+            return cart
         } 
         catch (error) {
             console.error(`Error adding product to cart: ${error.message}`);
