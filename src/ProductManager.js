@@ -71,20 +71,40 @@ class productManager {
     }
     async updateProduct(id, obj) {
         try {
-            const products = await this.getProducts({});
-            const index = products.findIndex((u) => u.id === id);
-            if     (index === -1) {
+          const products = await this.getProductList();
+          console.log(products);
+          const index = products.findIndex((u) => u.id === id);
+          console.log(index);
+          if (index === -1) {
             return null;
-            }
-        const updateProduct = { ...products[index], ...obj };
-        products.splice(index, 1, updateProduct);
-        await promises.writeFile(path, JSON.stringify(products));
-        return updateProduct;
+          }
+          const updateProduct = { ...products[index], ...obj };
+          products.splice(index, 1, updateProduct);
+          fs.promises.writeFile(path, JSON.stringify(products));
+          console.log(updateProduct);
+          console.log(products);
+          return updateProduct;
+          
         } catch (error) {
-            return error;
+          return error;
         }
+      }
+    // async updateProduct(id, campo, valor) {
+    //     try {
+    //         const products = await this.getProductList();
+    //         const productsUpdate = this.getProductById(id);
+    //         productsUpdate[campo] =valor;
+    //         products= products.push(productsUpdate)
+            
+
+    //         await fs.promises.writeFile(path, JSON.stringify(products));
+    
+    //     } catch (error) {
+    //         return error;
+    //     }
+    // }
     }
-}
+
 export const Manager = new productManager();
 
 // const producto1 = new productManager();
