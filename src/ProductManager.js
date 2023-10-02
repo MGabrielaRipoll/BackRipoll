@@ -57,25 +57,7 @@ class productManager {
             return error;
         }
     }
-    async getProductByCodigo(code) {
-        try {
-            console.log(code);
-            const products = await this.getProductList();
-            console.log(products);
-            const producto = products.find((product) => product.code === code);
-            console.log(producto);
 
-            if (producto) {
-                console.log(producto);
-                return producto;
-            } else {
-                console.log("ERROR: Not Found");
-                return;
-            }
-        } catch (error) {
-            return error;
-        }
-    }
 
     async deleteProductById(id) {
         try {
@@ -108,20 +90,7 @@ class productManager {
             return error;
         }
       }
-    // async updateProduct(id, campo, valor) {
-    //     try {
-    //         const products = await this.getProductList();
-    //         const productsUpdate = this.getProductById(id);
-    //         productsUpdate[campo] =valor;
-    //         products= products.push(productsUpdate)
-            
 
-    //         await fs.promises.writeFile(path, JSON.stringify(products));
-    
-    //     } catch (error) {
-    //         return error;
-    //     }
-    // }
     }
 
 export const Manager = new productManager();

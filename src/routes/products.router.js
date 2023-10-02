@@ -80,32 +80,19 @@ router.put("/:pid", async (req, res) => {
 
 router.post("/change", async (req, res) => {
     const accion = req.body.accion;
-    const code = req.body.code;
-    console.log(code);
+    const id = req.body.id;
 
     try {
-        if (accion === "BUSCAR") {
-            const productFind = await Manager.getProductByCodigo(code);
-            console.log(productFind);
-            res.render("changeproducts2", {productFind});
-        } 
-        else if (accion === "AGREGAR") {
+        if (accion === "AGREGAR") {
             const productNew = Manager.addProduct(req.body);
         } 
-        else if (accion === "ELIMINAR") {
-            const productFind = Manager.getProductByCodigo(code);
-            if (productFind) {
-                Manager.deleteProductById(productFind.id);
-                // Aquí puedes hacer algo después de eliminar el producto
-            } else {
-                console.log("Producto no encontrado para eliminar.");
-            }
-        } else {
-            console.log("Acción no válida.");
+        else {
+            Manager.deleteProductById(+id);
         }
-
         // Respuesta de éxito
         res.status(200).send("Operación exitosa");
+        io.emit('actualizacion-productos', products);
+
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Error interno del servidor");
