@@ -1,0 +1,20 @@
+<h3>BASE DE DATOS DE PRODUTOS</h3>
+
+<h4>Si lo que desea es eliminar un producto, ingrese el CODIGO del mismo, presione BUSCAR, chequee que sea el producto que desea eliminar y luego presione ELIMINAR</h4>
+<h4>Si lo que desea es dar de alta un producto, ingrese todos los datos del  mismo, y presione AGREGAR</h4>
+
+
+<form action="/api/products/change" method="post">
+
+    TITLE: <input type="text" name="title" id="title">
+    DESCRIPTION: <input type="text" name="description" id="description">
+    PRICE: <input type="number" name="price" id="price">
+    STOCK: <input type="number" name="stock" id="stock">
+    CODE: <input type="number" name="code" id="code">
+    CATEGORY: <input type="text" name="category" id="category">
+
+    <input type="submit" name="accion" value="BUSCAR">
+    <input type="submit" name="accion" value="ELIMINAR">
+    <input type="submit" name="accion" value="AGREGAR">
+
+</form>

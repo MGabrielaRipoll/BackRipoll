@@ -1,4 +1,5 @@
 import {Router} from 'express'
+import { __dirname } from "../utils.js"
 import {Manager} from '../ProductManager.js'
 
 const router = Router();
@@ -76,5 +77,40 @@ router.put("/:pid", async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+router.post("/change", async (req, res) => {
+    const accion = req.body.accion;
+    const code = req.body.code;
+    console.log(code);
+
+    try {
+        if (accion === "BUSCAR") {
+            const productFind = await Manager.getProductByCodigo(code);
+            console.log(productFind);
+            res.render("changeproducts2", {productFind});
+        } 
+        else if (accion === "AGREGAR") {
+            const productNew = Manager.addProduct(req.body);
+        } 
+        else if (accion === "ELIMINAR") {
+            const productFind = Manager.getProductByCodigo(code);
+            if (productFind) {
+                Manager.deleteProductById(productFind.id);
+                // Aquí puedes hacer algo después de eliminar el producto
+            } else {
+                console.log("Producto no encontrado para eliminar.");
+            }
+        } else {
+            console.log("Acción no válida.");
+        }
+
+        // Respuesta de éxito
+        res.status(200).send("Operación exitosa");
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Error interno del servidor");
+    }
+});
+
 
 export default router

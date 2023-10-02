@@ -1,0 +1,18 @@
+<h2>LISTA DE PRODUCTOS SIN TIEMPO REAL</h2>
+
+{{#if products}}
+
+    {{#each products}}
+        <H4>ID: {{id}}</H4>
+        <H4>TITULO: {{title}}</H4>
+        <H4>DESCRIPCION: {{descripcion}}</H4>
+        <H4>PRECIO: $ {{price}}</H4>
+        <H4>STOCK: {{stock}}</H4>
+        <H4>CODIGO: {{code}}</H4>
+        <H4>CATEGORIA: {{category}}</H4>
+        <h4>STATUS: {{status}}</h4>
+    {{/each}}
+    
+{{else}}
+<p> No existen productos en la Base de Datos </p>
+{{/if}}

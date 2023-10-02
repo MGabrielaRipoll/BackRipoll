@@ -1,0 +1,20 @@
+<h3>BASE DE DATOS DE PRODUTOS</h3>
+
+<h4>Esta seguro que este es el producto que desea eliminar?</h4>
+
+<form action="/api/products/change" method="post">
+
+        <H4>ID: {{id}}</H4>
+        <H4>TITULO: {{title}}</H4>
+        <H4>DESCRIPCION: {{descripcion}}</H4>
+        <H4>PRECIO: $ {{price}}</H4>
+        <H4>STOCK: {{stock}}</H4>
+        <H4>CODIGO: {{code}}</H4>
+        <H4>CATEGORIA: {{category}}</H4>
+        <h4>STATUS: {{status}}</h4>
+
+
+    <input type="submit" name="accion" value="VOLVER">
+    <input type="submit" name="accion" value="ELIMINAR">
+
+</form>

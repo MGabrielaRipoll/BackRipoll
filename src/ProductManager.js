@@ -57,6 +57,25 @@ class productManager {
             return error;
         }
     }
+    async getProductByCodigo(code) {
+        try {
+            console.log(code);
+            const products = await this.getProductList();
+            console.log(products);
+            const producto = products.find((product) => product.code === code);
+            console.log(producto);
+
+            if (producto) {
+                console.log(producto);
+                return producto;
+            } else {
+                console.log("ERROR: Not Found");
+                return;
+            }
+        } catch (error) {
+            return error;
+        }
+    }
 
     async deleteProductById(id) {
         try {
@@ -71,22 +90,22 @@ class productManager {
     }
     async updateProduct(id, obj) {
         try {
-          const products = await this.getProductList();
-          console.log(products);
-          const index = products.findIndex((u) => u.id === id);
-          console.log(index);
-          if (index === -1) {
-            return null;
-          }
-          const updateProduct = { ...products[index], ...obj };
-          products.splice(index, 1, updateProduct);
-          fs.promises.writeFile(path, JSON.stringify(products));
-          console.log(updateProduct);
-          console.log(products);
-          return updateProduct;
-          
-        } catch (error) {
-          return error;
+            const products = await this.getProductList();
+            console.log(products);
+            const index = products.findIndex((u) => u.id === id);
+            console.log(index);
+            if (index === -1) {
+                return null;
+            }
+            const updateProduct = { ...products[index], ...obj };
+            products.splice(index, 1, updateProduct);
+            fs.promises.writeFile(path, JSON.stringify(products));
+            console.log(updateProduct);
+            console.log(products);
+            return updateProduct;
+            
+            } catch (error) {
+            return error;
         }
       }
     // async updateProduct(id, campo, valor) {
