@@ -35,28 +35,30 @@ formAgregar.onsubmit = (e) => {
         showConfirmButton: false,
         timer: 1500
     })
-    
     socket.emit('agregado', nuevoProducto);
+    formAgregar.reset();
 };
 
 formEliminar.onsubmit = (e) => {
     e.preventDefault();
-    const id = document.getElementById('id').value;
-    socket.emit('eliminar', +id);
-        Swal.fire({
-            title: 'Are you sure?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
+
+    Swal.fire({
+        title: 'Are you sure?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const id = document.getElementById('id').value;
+            socket.emit('eliminar', +id);
+            formEliminar.reset();
             Swal.fire(
                 'Deleted!',
                 'Your file has been deleted.',
                 'success'
-            )}
-        })
-    
+            );
+        }
+    });
 };

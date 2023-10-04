@@ -63,6 +63,7 @@ class productManager {
         try {
             const products = await this.getProductList();
             const productsFiltrados = products.filter((product) => product.id !== id);
+            
             await fs.promises.writeFile(path, JSON.stringify(productsFiltrados));
             return products;
         } catch (error) {
