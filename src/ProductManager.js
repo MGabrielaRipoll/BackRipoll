@@ -90,7 +90,20 @@ class productManager {
             return error;
         }
       }
+    // async updateProduct(id, campo, valor) {
+    //     try {
+    //         const products = await this.getProductList();
+    //         const productsUpdate = this.getProductById(id);
+    //         productsUpdate[campo] =valor;
+    //         products= products.push(productsUpdate)
+            
 
+    //         await fs.promises.writeFile(path, JSON.stringify(products));
+    
+    //     } catch (error) {
+    //         return error;
+    //     }
+    // }
     }
 
 export const Manager = new productManager();

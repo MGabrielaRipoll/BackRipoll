@@ -22,6 +22,7 @@ router.get("/changeproducts", async (req, res) => {
         error
     }
 });
+
 router.get("/realTimeProducts", async (req, res) => {
     try {
         // const products = await Manager.getProductList();

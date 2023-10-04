@@ -1,18 +1,62 @@
-import { Manager } from "../../ProductManager.js"
 
-const socketClient = io();
+const socket = io();
 
-const form = document.getElementById("form");
-// const inputPrice = document.getElementById("price");
-// const priceP = document.getElementById("priceP");
-// form.onsubmit = (e) => {
-//   e.preventDefault();
-//   const price = inputPrice.value;
-//   socketClient.emit("newPrice", price);
-// };
-
-socketClient.on("productsChangs", (products) => {
-  const products = Manager.getProductList;
-  res.render("realTimeProducts", products)
-
+socket.on('productosActualizados', (productos) => {
+    const listaDeProductos = document.getElementById('listaDeProductos');
+    listaDeProductos.innerHTML = ''; 
+    console.log(productos);
+    productos.forEach((producto) => {
+        const li = document.createElement('li');
+        li.textContent = `
+        TITLE: ${producto.title}
+        DESCRIPTION: ${producto.description}
+        PRICE: $${producto.price}
+        STOCK: ${producto.stock}
+        CODE: ${producto.code}
+        CATEGORY: ${producto.category};`       
+        listaDeProductos.appendChild(li);
+    });
 });
+
+const formAgregar = document.getElementById('formAgregar');
+const formEliminar = document.getElementById('formEliminar');
+
+formAgregar.onsubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(formAgregar);
+    const nuevoProducto = {};
+    formData.forEach((value, key) => {
+        nuevoProducto[key] = value;
+    });
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Product added',
+        showConfirmButton: false,
+        timer: 1500
+    })
+    
+    socket.emit('agregado', nuevoProducto);
+};
+
+formEliminar.onsubmit = (e) => {
+    e.preventDefault();
+    const id = document.getElementById('id').value;
+    socket.emit('eliminar', +id);
+        Swal.fire({
+            title: 'Are you sure?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+            Swal.fire(
+                'Deleted!',
+                'Your file has been deleted.',
+                'success'
+            )}
+        })
+    
+};

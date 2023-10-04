@@ -5,8 +5,7 @@ import viewsRouter from "./routes/views.router.js";
 import { __dirname } from "./utils.js";
 import { Server } from "socket.io";
 import { engine } from "express-handlebars";
-
-
+import { Manager } from './ProductManager.js';
 
 
 const app = express();
@@ -18,13 +17,9 @@ app.engine("handlebars", engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
-
-
 app.use('/api/products', productRouter)
 app.use('/api/cart', cartRouter)
 app.use("/api/views", viewsRouter);
-
-
 
 const httpServer = app.listen(8080, () => {
     console.log("Escuchando al puerto 8080");
@@ -32,16 +27,41 @@ const httpServer = app.listen(8080, () => {
 
 const socketServer = new Server(httpServer);
 
+socketServer.on('connection', async (socket) => {
+    try {
+        const productosActualizados = await Manager.getProductList();
+        socketServer.emit('productosActualizados', productosActualizados);
+        console.log('Un cliente se ha conectado.');
 
-socketServer.on("connection", (socket) => {
-    //console.log(`Cliente conectado: ${socket.id}`);
-    socket.on("disconnect", () => {
-      //console.log(`Cliente desconectado: ${socket.id}`);
-    });
-  //socket.emit("welcome", "welcome to websocket");
-    socket.on("newPrice", (value) => {
-        //socket.emit("priceUpdated", value);
-        //socketServer.emit("priceUpdated", value);
-        socket.broadcast.emit("priceUpdated", value);
-    });
+        socket.on('agregado', async (nuevoProducto) => {
+            try {
+                const products = await Manager.addProduct(nuevoProducto);
+                const productosActualizados = await Manager.getProductList();
+                console.log(productosActualizados);
+
+                socketServer.emit('productosActualizados', productosActualizados);
+            } catch (error) {
+                console.error('Error al agregar el producto:', error);
+            }
+        });
+
+        socket.on('eliminar', async (id) => {
+            try {
+                const products = await Manager.deleteProductById(id);
+                const productosActualizados = await Manager.getProductList();
+                console.log(productosActualizados);
+            
+                socketServer.emit('productosActualizados', productosActualizados);
+            } catch (error) {
+                console.error('Error al eliminar el producto:', error);
+            }
+    })  
+
+    socket.on('disconnect', () => {
+        console.log('Un cliente se ha desconectado.');
+    })}
+            catch (error) {
+                console.error ("error de conexion")
+};
 })
+

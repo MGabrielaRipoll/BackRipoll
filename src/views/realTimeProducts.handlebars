@@ -1,21 +1,42 @@
-<h3>BASE DE DATOS DE PRODUTOS</h3>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BASE DE DATOS DE PRODUCTOS EN TIEMPO REAL</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+ 
 
-<h4>Si lo que desea es eliminar un producto, ingrese el CODIGO del mismo, presione BUSCAR, chequee que sea el producto que desea eliminar y luego presione ELIMINAR</h4>
-<h4>Si lo que desea es dar de alta un producto, ingrese todos los datos del  mismo, y presione AGREGAR</h4>
+    <h3>BASE DE DATOS DE PRODUCTOS EN TIEMPO REAL</h3>
+    
+    <h4>Si lo que desea es dar de alta un producto, ingrese todos los datos del mismo y presione AGREGAR</h4>
 
+    <!-- FORMULARIO PARA AGREGAR -->
+    <form id="formAgregar" method="post">
+        TITLE: <input type="text" name="title" id="title" required>
+        DESCRIPTION: <input type="text" name="description" id="description" required>
+        PRICE: <input type="number" name="price" id="price" required>
+        STOCK: <input type="number" name="stock" id="stock" required>
+        CODE: <input type="number" name="code" id="code" required>
+        CATEGORY: <input type="text" name="category" id="category" required>
 
-<form action="/api/products/change" method="post">
-    ID: <input type="number" name="id" id="id">
-    TITLE: <input type="text" name="title" id="title">
-    DESCRIPTION: <input type="text" name="description" id="description">
-    PRICE: <input type="number" name="price" id="price">
-    STOCK: <input type="number" name="stock" id="stock">
-    CODE: <input type="number" name="code" id="code">
-    CATEGORY: <input type="text" name="category" id="category">
+        <input type="submit" name="accion" id="submitAdd" value="AGREGAR">
+    </form>
 
-    <input type="submit" name="accion" value="ELIMINAR">
-    <input type="submit" name="accion" value="AGREGAR">
+    <h4>Si lo que desea es eliminar un producto, ingrese el ID del mismo y luego presione ELIMINAR</h4>
+
+    <!-- FORMULARIO PARA ELIMINAR -->
+    <form id="formEliminar" method="post">
+        ID: <input type="number" name="id" id="id" required>
+        <input type="submit" name="accion" id="submitDel" value="ELIMINAR">
+    </form>
+
+    <ul id="listaDeProductos"></ul>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/js/index.js"></script>
 
-
-</form>
+</body>
+</html>

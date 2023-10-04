@@ -89,9 +89,7 @@ router.post("/change", async (req, res) => {
         else {
             Manager.deleteProductById(+id);
         }
-        // Respuesta de éxito
         res.status(200).send("Operación exitosa");
-        io.emit('actualizacion-productos', products);
 
     } catch (error) {
         console.error("Error:", error);
