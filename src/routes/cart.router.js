@@ -1,12 +1,13 @@
 
 import { Router } from 'express';
-import { Cart } from '../carts.js';
+// import { Cart } from '../dao/fileSystem/cartsManager.js';
+import { Cart } from '../dao/MongoDB/cartsManager.mongo.js'
 
 const router = Router();
 
 router.get("/", async (req, res) => {
     try {
-        const carts = await Cart.getCartsList();
+        const carts = await Cart.findAll();
 
         if (!carts || carts.length === 0) {
             return res.status(404).json({ message: "No carts found" });
@@ -20,9 +21,8 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-
     try {
-        const cart = await Cart.createCart();
+        const cart = await Cart.createOne();
         res.status(201).json({ message: "Cart created", cart });
     } catch (error) {
         console.error(error);
@@ -34,7 +34,7 @@ router.get("/:cid", async (req, res) => {
     const { cid } = req.params;
 
     try {
-        const cart = await Cart.getCartById(+cid);
+        const cart = await Cart.findById(cid);
 
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
@@ -49,14 +49,8 @@ router.get("/:cid", async (req, res) => {
 
 router.post("/:cid/product/:pid", async (req, res) => {
     const { cid, pid } = req.params;
-
     try {
-        const response = await Cart.addProductCart(+cid, +pid);
-        console.log(response);
-        if (!response) {
-            return res.status(404).json({ message: "Cart not found" });
-        }
-
+        const response = await Cart.addProductToCart(cid,pid);
         res.status(200).json({ message: "Product added to cart", cart: response });
     } catch (error) {
         console.error(error);
