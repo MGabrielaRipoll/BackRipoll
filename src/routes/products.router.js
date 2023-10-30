@@ -6,16 +6,10 @@ import { Manager } from '../dao/MongoDB/productManager.mongo.js'
 const router = Router();
 
 router.get("/", async (req, res) => {
-    const { limit } = req.query;
     
     try {
-        const products = await Manager.findAll();
-        if (limit) {
-            const productsLimit = products.slice(0, parseInt(limit))
-            res.status(200).json({ message: "Products found", products: productsLimit });
-        } else {
-            res.status(200).json({ message: "Products found", products });
-        }        
+        const products = await Manager.findAll(req.query); 
+        res.status(200).json({ message: "Product found", products });   
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

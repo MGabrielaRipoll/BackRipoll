@@ -20,6 +20,7 @@ router.get("/", async (req, res) => {
     }
 });
 
+
 router.post("/", async (req, res) => {
     try {
         const cart = await Cart.createOne();
@@ -47,7 +48,19 @@ router.get("/:cid", async (req, res) => {
     }
 });
 
-router.post("/:cid/product/:pid", async (req, res) => {
+router.put("/:cid/products/:pid", async (req, res) => {
+    const { cid, pid } = req.params;
+    const { quantity } = req.body;
+    try {
+        const response = await Cart.update(cid,pid, quantity);
+        res.status(200).json({ message: "Update to cart", cart: response });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+router.post("/:cid/products/:pid", async (req, res) => {
     const { cid, pid } = req.params;
     try {
         const response = await Cart.addProductToCart(cid,pid);
@@ -57,5 +70,35 @@ router.post("/:cid/product/:pid", async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 });
-
+router.delete("/:cid/products/:pid", async (req,res) => {
+    try {
+        const { cid, pid } = req.params;
+        const response = await Cart.deleteOne(cid,pid);
+        res.status(200).json({ message: "Product delete to cart", cart: response });
+    
+    } catch (error){
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+router.put("/:cid", async (req,res) => {
+    const { pid , quantity } = req.body;
+    const { cid } = req.params;
+    try {
+        const response = await Cart.update(cid , pid , quantity);
+        console.log(response);
+        res.status(200).json({ message: "cart update", cart: response });
+    
+    } catch (error){
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+router.delete("/:cid", async (req,res) => {
+    try {
+        const { cid } = req.params;
+        const response = await Cart.deleteAll(cid);
+        res.status(200).json({ message: "Cart delette", cart: response });   
+    } catch (error){
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 export default router;

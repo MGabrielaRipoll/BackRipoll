@@ -7,8 +7,10 @@ const router = Router();
 
 router.get("/home", async (req, res) => {
     try {
-        const products = await Manager.findAll();
-    res.render("home", { products });
+        const products = await Manager.findAll(req.query);
+        const result = products.info.results;
+        console.log(result);
+        res.render("home", { result });
     } catch {
         error
     }

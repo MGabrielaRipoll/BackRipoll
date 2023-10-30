@@ -1,18 +1,46 @@
-<h2>LISTA DE PRODUCTOS SIN TIEMPO REAL</h2>
+{{!-- <h2>LISTA DE PRODUCTOS SIN TIEMPO REAL</h2>
 
-{{#if products}}
+{{#if result}}
 
-    {{#each products}}
-        <H4>ID: {{id}}</H4>
-        <H4>TITULO: {{title}}</H4>
-        <H4>DESCRIPCION: {{descripcion}}</H4>
-        <H4>PRECIO: $ {{price}}</H4>
-        <H4>STOCK: {{stock}}</H4>
-        <H4>CODIGO: {{code}}</H4>
-        <H4>CATEGORIA: {{category}}</H4>
-        <h4>STATUS: {{status}}</h4>
+    {{#each result}}
+        <h4>TITULO: {{title}}</h4>
+        <h4>DESCRIPCION: {{description}}</h4>
+        <h4>PRECIO: $ {{price}}</h4>
+        <h4>STOCK: {{stock}}</h4>
+        <h4>CODIGO: {{code}}</h4>
+        <h4>CATEGORIA: {{category}}</h4>
+        <img src={{thumbail}} alt={{description}}>
+        <button>Agregar</button>
     {{/each}}
+
+    <button>PREV</button>
+    <button>NEXT</button>
     
 {{else}}
-<p> No existen productos en la Base de Datos </p>
+    <p>No existen productos en la Base de Datos</p>
+{{/if}} --}}
+
+<h2>PRODUCT LIST</h2>
+
+{{#if result.length}}
+    <div class="product-cards">
+        {{#each result}}
+        <div class="product-card">
+            <h4>TITLE: {{title}}</h4>
+            <p>DESCRIPTION: {{description}}</p>
+            <p>PRICE: ${{price}}</p>
+            <p>STOCK: {{stock}}</p>
+            <p>CATEGORY: {{category}}</p>
+            <img src="{{thumbail}}" alt="{{title}}">
+            <button class="add-to-cart-btn" data-product-id="{{_id}}">Add to Cart</button>
+        </div>
+        {{/each}}
+    </div>
+
+    <div class="pagination">
+        <button id="prev-page" {{#if prevPage}}data-page="{{prevPage}}"{{/if}}>Previous Page</button>
+        <button id="next-page" {{#if nextPage}}data-page="{{nextPage}}"{{/if}}>Next Page</button>
+    </div>
+{{else}}
+    <p>No products available.</p>
 {{/if}}
