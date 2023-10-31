@@ -1,6 +1,7 @@
 import { Router } from "express";
 // import {Manager} from '../dao/fileSystem/ProductManager.js'
 import { Manager } from '../dao/MongoDB/productManager.mongo.js'
+import { paginate } from "mongoose-paginate-v2";
 
 
 const router = Router();
@@ -8,13 +9,20 @@ const router = Router();
 router.get("/home", async (req, res) => {
     try {
         const products = await Manager.findAll(req.query);
-        const result = products.info.results;
+        const productsFinal = products.info.results;
+        const clonedProducts = productsFinal.map(product => Object.assign({}, product._doc));
+        const result = clonedProducts;
+        const paginate = products.info.pages;
+        const sort = req.query.orders;
         console.log(result);
-        res.render("home", { result });
-    } catch {
-        error
+        res.render("home", { products: result, paginate: paginate, sort: sort });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error interno del servidor");
     }
 });
+
+
 
 router.get("/changeproducts", async (req, res) => {
     try {
@@ -27,8 +35,8 @@ router.get("/changeproducts", async (req, res) => {
 
 router.get("/realTimeProducts", async (req, res) => {
     try {
-        // const products = await Manager.getProductList();
-    res.render("realTimeProducts");
+        const products = await Manager.findAll();
+        res.render("realTimeProducts", products);
     } catch {
         error
     }

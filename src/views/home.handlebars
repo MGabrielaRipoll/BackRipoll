@@ -1,15 +1,15 @@
 {{!-- <h2>LISTA DE PRODUCTOS SIN TIEMPO REAL</h2>
 
-{{#if result}}
+{{#if products}}
 
-    {{#each result}}
+    {{#each products}}
         <h4>TITULO: {{title}}</h4>
         <h4>DESCRIPCION: {{description}}</h4>
         <h4>PRECIO: $ {{price}}</h4>
         <h4>STOCK: {{stock}}</h4>
         <h4>CODIGO: {{code}}</h4>
         <h4>CATEGORIA: {{category}}</h4>
-        <img src={{thumbail}} alt={{description}}>
+        <img src={{thumbail}}>
         <button>Agregar</button>
     {{/each}}
 
@@ -22,9 +22,9 @@
 
 <h2>PRODUCT LIST</h2>
 
-{{#if result.length}}
+{{#if products.length}}
     <div class="product-cards">
-        {{#each result}}
+        {{#each products}}
         <div class="product-card">
             <h4>TITLE: {{title}}</h4>
             <p>DESCRIPTION: {{description}}</p>
@@ -43,4 +43,4 @@
     </div>
 {{else}}
     <p>No products available.</p>
-{{/if}}
+{{/if}} 

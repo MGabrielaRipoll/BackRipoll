@@ -6,6 +6,7 @@ import viewsRouter from "./routes/views.router.js";
 import { __dirname } from "./utils.js";
 import { Server } from "socket.io";
 import { engine } from "express-handlebars";
+import { Manager } from './dao/MongoDB/productManager.mongo.js'
 // import { Manager } from './dao/fileSystem/ProductManager.js';
 import { messagesManager } from "./dao/MongoDB/messaggeManager.mongo.js";
 import "./DB/configDB.js";
@@ -14,6 +15,7 @@ import "./DB/configDB.js";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/public', express.static('public'));
 app.use(express.static(__dirname + "/public"));
 
 app.engine("handlebars", engine());
@@ -32,53 +34,51 @@ const httpServer = app.listen(8080, () => {
 
 const socketServer = new Server(httpServer);
 
-socketServer.on("connection", (socket) => {
+socketServer.on("connection", async (socket) => {
     console.log(`Cliente conectado: ${socket.id}`);
+
+    // Manejo de mensajes
     socket.on("newUser", (user) => {
         socket.broadcast.emit("userConnected", user);
         socket.emit("connected");
     });
-    socket.on("message", async(infoMessage) => {
+
+    socket.on("message", async (infoMessage) => {
         await messagesManager.createOne(infoMessage);
-        const allMessages = await messagesManager.findAll()
+        const allMessages = await messagesManager.findAll();
         socketServer.emit("chat", allMessages);
     });
+
+    try {
+        // Manejo de productos (solo si estás utilizando Manager)
+        const productosActualizados = await Manager.findAll(objeto);
+        console.log(productosActualizados);
+        socketServer.emit('productosActualizados', productosActualizados);
+
+        socket.on('agregado', async (nuevoProducto) => {
+            try {
+                const products = await Manager.createOne(nuevoProducto);
+                const productosActualizados = await Manager.findAll();
+                socketServer.emit('productosActualizados', productosActualizados);
+            } catch (error) {
+                console.error('Error al agregar el producto:', error);
+            }
+        });
+
+        socket.on('eliminar', async (id) => {
+            try {
+                const products = await Manager.deleteOne(id);
+                const productosActualizados = await Manager.findAll();
+                socketServer.emit('productosActualizados', productosActualizados);
+            } catch (error) {
+                console.error('Error al eliminar el producto:', error);
+            }
+        })
+    } catch (error) {
+        console.error("Error de conexión");
+    }
+
+    socket.on('disconnect', () => {
+        console.log('Un cliente se ha desconectado.');
+    });
 });
-
-// socketServer.on('connection', async (socket) => {
-//     try {
-//         const productosActualizados = await Manager.getProductList();
-//         socketServer.emit('productosActualizados', productosActualizados);
-//         console.log('Un cliente se ha conectado.');
-
-//         socket.on('agregado', async (nuevoProducto) => {
-//             try {
-//                 const products = await Manager.addProduct(nuevoProducto);
-//                 const productosActualizados = await Manager.getProductList();
-//                 console.log(productosActualizados);
-
-//                 socketServer.emit('productosActualizados', productosActualizados);
-//             } catch (error) {
-//                 console.error('Error al agregar el producto:', error);
-//             }
-//         });
-
-//         socket.on('eliminar', async (id) => {
-//             try {
-//                 const products = await Manager.deleteProductById(id);
-//                 const productosActualizados = await Manager.getProductList();
-//                 console.log(productosActualizados);
-            
-//                 socketServer.emit('productosActualizados', productosActualizados);
-//             } catch (error) {
-//                 console.error('Error al eliminar el producto:', error);
-//             }
-//     })  
-   
-    // socket.on('disconnect', () => {
-    //     console.log('Un cliente se ha desconectado.');
-    // })
-    //         catch (error) {
-    //             console.error ("error de conexion")
-    //         }
-
