@@ -1,6 +1,8 @@
 import { Router } from "express";
 // import {Manager} from '../dao/fileSystem/ProductManager.js'
 import { Manager } from '../dao/MongoDB/productManager.mongo.js'
+import { Cart } from '../dao/MongoDB/cartsManager.mongo.js'
+
 import { paginate } from "mongoose-paginate-v2";
 
 
@@ -15,13 +17,32 @@ router.get("/home", async (req, res) => {
         const paginate = products.info.pages;
         const sort = req.query.orders;
         console.log(result);
-        res.render("home", { products: result, paginate: paginate, sort: sort });
+        res.render("home",  {products: result, paginate: paginate, sort: sort, style:"product"} );
     } catch (error) {
         console.error(error);
         res.status(500).send("Error interno del servidor");
     }
 });
 
+router.get('/carts/:cid', async (req, res) => {
+    const { cid } = req.params;
+
+    try {
+        const cart = await Cart.findById(cid);
+
+        if (!cart) {
+            return res.status(404).send('Carrito no encontrado');
+        }
+        const cartProducts = cart.products.map(doc => doc.toObject());
+
+        
+        console.log(cartProducts);
+        res.render('carts', { products:cartProducts, style:"product" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error interno del servidor');
+    }
+});
 
 
 router.get("/changeproducts", async (req, res) => {
@@ -33,14 +54,14 @@ router.get("/changeproducts", async (req, res) => {
     }
 });
 
-router.get("/realTimeProducts", async (req, res) => {
-    try {
-        const products = await Manager.findAll();
-        res.render("realTimeProducts", products);
-    } catch {
-        error
-    }
-});
+// router.get("/realTimeProducts", async (req, res) => {
+//     try {
+//         const products = await Manager.findAll();
+//         res.render("realTimeProducts", products);
+//     } catch {
+//         error
+//     }
+// });
 router.get("/chat", async (req, res) => {
     try {
         // const products = await Manager.getProductList();

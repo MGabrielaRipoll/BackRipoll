@@ -3,9 +3,9 @@ body {
     text-align: center;
     background-color: #f5f5f5;
   }
-  
+
   h2 {
-    color: #333;
+    color: #12034d;
   }
   
   .product-cards {
@@ -37,6 +37,14 @@ body {
     cursor: pointer;
     margin-top: 10px;
     font-weight: bold;
+  }
+  .botonesQuantity {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 10px;
+    margin: 10px;
   }
   
   .add-to-cart-btn:hover {
