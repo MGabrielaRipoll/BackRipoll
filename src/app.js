@@ -39,11 +39,8 @@ app.use('/api/chat', chatsRouter);
 
 const URI =
 "mongodb+srv://gabymaujw:Salmo374@cluster0.bs3x8cw.mongodb.net/ecommerce?retryWrites=true&w=majority";
-
 app.use(
     session({
-        resave: false,
-        saveUninitialized: false,
         store: new MongoStore({
         mongoUrl: URI,
         }),

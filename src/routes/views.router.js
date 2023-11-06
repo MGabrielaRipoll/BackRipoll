@@ -2,7 +2,7 @@ import { Router } from "express";
 // import {Manager} from '../dao/fileSystem/ProductManager.js'
 import { Manager } from '../dao/MongoDB/productManager.mongo.js'
 import { Cart } from '../dao/MongoDB/cartsManager.mongo.js'
-
+import { Users } from '../dao/MongoDB/usersManager.mongo.js'
 // import { paginate } from "mongoose-paginate-v2";
 
 
