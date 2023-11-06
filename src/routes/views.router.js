@@ -3,7 +3,7 @@ import { Router } from "express";
 import { Manager } from '../dao/MongoDB/productManager.mongo.js'
 import { Cart } from '../dao/MongoDB/cartsManager.mongo.js'
 
-import { paginate } from "mongoose-paginate-v2";
+// import { paginate } from "mongoose-paginate-v2";
 
 
 const router = Router();
@@ -22,6 +22,27 @@ router.get("/home", async (req, res) => {
         console.error(error);
         res.status(500).send("Error interno del servidor");
     }
+});
+router.get("/login", (req, res) => {
+    if (req.session.user) {
+        return res.redirect("/profile");
+    }
+    res.render("login");
+});
+  
+router.get("/signup", (req, res) => {
+    if (req.session.user) {
+        return res.redirect("/profile");
+    }
+    res.render("signup");
+});
+  
+router.get("/profile", (req, res) => {
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+    console.log(req.session.user);
+    res.render("profile", { user: req.session.user });
 });
 
 router.get('/carts/:cid', async (req, res) => {
@@ -53,6 +74,8 @@ router.get("/changeproducts", async (req, res) => {
         error
     }
 });
+
+
 
 // router.get("/realTimeProducts", async (req, res) => {
 //     try {
