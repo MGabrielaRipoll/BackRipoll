@@ -18,6 +18,10 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    isAdmin: {
+        default:false,
+        type: Boolean,
+    }
 });
 
 // usersSchema.plugin(mongoosePaginate);

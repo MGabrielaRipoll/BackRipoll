@@ -4,8 +4,8 @@ import { Users } from "../dao/MongoDB/usersManager.mongo.js";
 const router = Router();
 
 router.post("/signup", async (req, res) => {
-    const { first_name, last_name, email, password } = req.body;
-    if (!first_name || !last_name || !email || !password) {
+    const { name, lastName , email, password } = req.body;
+    if (!name || !lastName || !email || !password) {
         return res.status(400).json({ message: "All fields are required" });
     }
     try {
@@ -18,24 +18,29 @@ router.post("/signup", async (req, res) => {
 
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
+    console.log(req.body);
     if (!email || !password) {
         return res.status(400).json({ message: "All fields are required" });
     }
     try {
         const user = await Users.findByEmail(email);
+        console.log(user);
         if (!user) {
-        return res.redirect("/signup");
+        return res.redirect("/api/views/signup");
         }
         const isPasswordValid = password === user.password;
         if (!isPasswordValid) {
         return res.status(401).json({ message: "Password is not valid" });
         }
-        const sessionInfo =
-        email === "adminCoder@coder.com" && password === "adminCod3r123"
-            ? { email, first_name: user.first_name, isAdmin: true }
-            : { email, first_name: user.first_name, isAdmin: false };
+        let sessionInfo;
+        if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
+            sessionInfo =  { email: email, name: user.name, isAdmin: true }
+        } else {
+            sessionInfo = { email: email , name: user.name, isAdmin: false }
+        };
+        console.log(sessionInfo);
         req.session.user = sessionInfo;
-        res.redirect("/home");
+        res.redirect("/api/views/profile");
     } catch (error) {
         res.status(500).json({ error });
     }
@@ -43,7 +48,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/signout", (req, res) => {
     req.session.destroy(() => {
-        res.redirect("/login");
+        res.redirect("/api/views/login");
 
     });
 });

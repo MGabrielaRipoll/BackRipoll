@@ -24,15 +24,15 @@ router.get("/home", async (req, res) => {
     }
 });
 router.get("/login", (req, res) => {
-    if (req.session.user) {
-        return res.redirect("/profile");
+    if (req.session) {
+        if (req.session.user) return res.redirect("/profile");
     }
     res.render("login");
 });
   
 router.get("/signup", (req, res) => {
-    if (req.session.user) {
-        return res.redirect("/profile");
+    if (req.session) {
+        if (req.session.user) return res.redirect("/profile");
     }
     res.render("signup");
 });

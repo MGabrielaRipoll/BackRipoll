@@ -2,7 +2,7 @@ import  express  from 'express';
 import productRouter from './routes/products.router.js'
 import cartRouter from './routes/cart.router.js'
 import chatsRouter from './routes/chats.router.js'
-import sessionsRouter from './routes/session.router.js'
+import sessionRouter from './routes/session.router.js'
 import viewsRouter from "./routes/views.router.js";
 import cookieRouter from './routes/cookie.router.js'
 import { __dirname } from "./utils.js";
@@ -34,13 +34,15 @@ app.use('/api/products', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/views', viewsRouter);
 app.use("/api/cookie", cookieRouter);
-app.use("/api/sessions", sessionsRouter);
+app.use("/api/session", sessionRouter);
 app.use('/api/chat', chatsRouter);
 
 const URI =
 "mongodb+srv://gabymaujw:Salmo374@cluster0.bs3x8cw.mongodb.net/ecommerce?retryWrites=true&w=majority";
 app.use(
     session({
+        resave: false,       
+        saveUninitialized: false,
         store: new MongoStore({
         mongoUrl: URI,
         }),
