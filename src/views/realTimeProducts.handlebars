@@ -13,7 +13,7 @@
     <h4>Si lo que desea es dar de alta un producto, ingrese todos los datos del mismo y presione AGREGAR</h4>
 
     <!-- FORMULARIO PARA AGREGAR -->
-    <form id="formAgregar" method="post">
+    <form action="/api/products/" id="formAgregar" method="post">
         TITLE: <input type="text" name="title" id="title" required>
         DESCRIPTION: <input type="text" name="description" id="description" required>
         PRICE: <input type="number" name="price" id="price" required>
@@ -28,13 +28,33 @@
     <h4>Si lo que desea es eliminar un producto, ingrese el ID del mismo y luego presione ELIMINAR</h4>
 
     <!-- FORMULARIO PARA ELIMINAR -->
-    <form id="formEliminar" method="post">
+    <form action="/api/products/"  id="formEliminar" method="delete">
         ID: <input type="number" name="id" id="id" required>
         <input type="submit" name="accion" id="submitDel" value="ELIMINAR">
     </form>
 
-    <ul id="listaDeProductos"></ul>
-    
+    {{#if products.length}}
+        <div class="product-cards">
+            {{#each products}}
+            <div class="product-card">
+                <h4>TITLE: {{title}}</h4>
+                <p>DESCRIPTION: {{description}}</p>
+                <p>PRICE: ${{price}}</p>
+                <p>STOCK: {{stock}}</p>
+                <p>CATEGORY: {{category}}</p>
+                <img src="{{thumbail}}" alt="{{title}}">
+                <button class="add-to-cart-btn" data-product-id="{{_id}}">Add to Cart</button>
+            </div>
+            {{/each}}
+        </div>
+
+        <div class="pagination">
+            <button id="prev-page" {{#if prevPage}}data-page="{{prevPage}}"{{/if}}>Previous Page</button>
+            <button id="next-page" {{#if nextPage}}data-page="{{nextPage}}"{{/if}}>Next Page</button>
+        </div>
+    {{else}}
+        <p>No products available.</p>
+    {{/if}}     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/index.js"></script>

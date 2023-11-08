@@ -1,6 +1,13 @@
-<h2>WELCOME {{user.name}}</h2>
-<h4>Your email is: {{user.email}} </h4>
-<button><a href="/api/users/signout">SIGN OUT</a></button>
+
+{{#if users}}
+    <div class="userDiv">
+        <h2>WELCOME {{users.name}}</h2>
+        <h4>Your email is: {{users.email}} </h4>
+        <button><a href="/api/session/signout">SIGN OUT</a></button>
+    </div>
+
+{{/if}}
+
 
 {{#if products.length}}
     <div class="product-cards">
@@ -12,7 +19,7 @@
             <p>STOCK: {{stock}}</p>
             <p>CATEGORY: {{category}}</p>
             <img src="{{thumbail}}" alt="{{title}}">
-            <button class="add-to-cart-btn" data-product-id="{{_id}}">Add to Cart</button>
+            <button class="add-to-cart-btn" data-product-id="{{_id}}" onclick="addProductToCart({{_id}})">Add to Cart</button>
         </div>
         {{/each}}
     </div>

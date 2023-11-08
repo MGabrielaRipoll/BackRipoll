@@ -10,7 +10,8 @@ router.post("/signup", async (req, res) => {
     }
     try {
         const createdUser = await Users.createOne(req.body);
-        res.status(200).json({ message: "User created", user: createdUser });
+        res.redirect("/api/views/login");
+        // res.status(200).json({ message: "User created", user: createdUser });
     } catch (error) {
         res.status(500).json({ error });
     }
@@ -35,12 +36,17 @@ router.post("/login", async (req, res) => {
         let sessionInfo;
         if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
             sessionInfo =  { email: email, name: user.name, isAdmin: true }
+            req.session.user = sessionInfo;
+            res.redirect("/api/views/realTimeProducts");
+
         } else {
             sessionInfo = { email: email , name: user.name, isAdmin: false }
+            req.session.user = sessionInfo;
+            res.redirect("/api/views/home");
+
         };
-        console.log(sessionInfo);
-        req.session.user = sessionInfo;
-        res.redirect("/api/views/profile");
+        // req.session.user = sessionInfo;
+        // res.redirect("/api/views/home");
     } catch (error) {
         res.status(500).json({ error });
     }

@@ -20,6 +20,20 @@ const FileStore = fileStore(session);
 
 
 const app = express();
+const URI =
+"mongodb+srv://gabymaujw:Salmo374@cluster0.bs3x8cw.mongodb.net/ecommerce?retryWrites=true&w=majority";
+app.use(
+    session({
+        resave: false,       
+        saveUninitialized: false,
+        store: new MongoStore({
+        mongoUrl: URI,
+        }),
+        secret: "secretSession",
+        cookie: { maxAge: 60000 },
+    })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser("SecretCookie"));
@@ -37,19 +51,6 @@ app.use("/api/cookie", cookieRouter);
 app.use("/api/session", sessionRouter);
 app.use('/api/chat', chatsRouter);
 
-const URI =
-"mongodb+srv://gabymaujw:Salmo374@cluster0.bs3x8cw.mongodb.net/ecommerce?retryWrites=true&w=majority";
-app.use(
-    session({
-        resave: false,       
-        saveUninitialized: false,
-        store: new MongoStore({
-        mongoUrl: URI,
-        }),
-        secret: "secretSession",
-        cookie: { maxAge: 60000 },
-    })
-);
 
 
 const httpServer = app.listen(8080, () => {

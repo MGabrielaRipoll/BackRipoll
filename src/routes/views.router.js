@@ -17,7 +17,7 @@ router.get("/home", async (req, res) => {
         const paginate = products.info.pages;
         const sort = req.query.orders;
         console.log(result);
-        res.render("home",  {products: result, paginate: paginate, sort: sort, style:"product"} );
+        res.render("home",  {users: req.session.user, products: result, paginate: paginate, sort: sort, style:"product"} );
     } catch (error) {
         console.error(error);
         res.status(500).send("Error interno del servidor");
@@ -25,25 +25,25 @@ router.get("/home", async (req, res) => {
 });
 router.get("/login", (req, res) => {
     if (req.session) {
-        if (req.session.user) return res.redirect("/profile");
+        if (req.session.user) return res.redirect("/home");
     }
     res.render("login");
 });
   
 router.get("/signup", (req, res) => {
     if (req.session) {
-        if (req.session.user) return res.redirect("/profile");
+        if (req.session.user) return res.redirect("/login");
     }
     res.render("signup");
 });
   
-router.get("/profile", (req, res) => {
-    if (!req.session.user) {
-        return res.redirect("/login");
-    }
-    console.log(req.session.user);
-    res.render("profile", { user: req.session.user });
-});
+// router.get("/profile", (req, res) => {
+//     if (!req.session.user) {
+//         return res.redirect("/login");
+//     }
+//     console.log(req.session.user);
+//     res.render("profile", { user: req.session.user });
+// });
 
 router.get('/carts/:cid', async (req, res) => {
     const { cid } = req.params;
@@ -77,14 +77,14 @@ router.get("/changeproducts", async (req, res) => {
 
 
 
-// router.get("/realTimeProducts", async (req, res) => {
-//     try {
-//         const products = await Manager.findAll();
-//         res.render("realTimeProducts", products);
-//     } catch {
-//         error
-//     }
-// });
+router.get("/realTimeProducts", async (req, res) => {
+    try {
+        const products = await Manager.findAll({});
+        res.render("realTimeProducts", { products:products, style: "product"});
+    } catch {
+        error
+    }
+});
 router.get("/chat", async (req, res) => {
     try {
         // const products = await Manager.getProductList();
