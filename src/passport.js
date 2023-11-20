@@ -90,18 +90,44 @@ passport.use("login", new LocalStrategy(
 
 
 // github
-passport.use("github", new GithubStrategy(
-        {clientID: "Iv1.6148d02ed6d375ee",
-        clientSecret: "bb419bad4342efa894ca110fbe1048a58c1c1802",
-        callbackURL: "http://localhost:8080/api/session/callback",
-        scope: ["user:email"],
-        },
-        async (accessToken, refreshToken, profile, done) => {
-        try {
-            const userDB = await Users.findByEmail(profile._json.email);
-            // login
-            console.log(profile._json.email);
-            console.log(userDB);
+passport.use("github", 
+        new GithubStrategy(
+                {
+                clientID: "Iv1.6148d02ed6d375ee",
+                clientSecret: "1050e5c6c7ff19340244b04987a39b4637cd3073",
+                callbackURL: "http://localhost:8080/api/session/callback",
+                scope: ["user:email"],
+                },
+                async (accessToken, refreshToken, profile, done) => {
+                try {
+                    console.log(profile);
+                    const userDB = await Users.findByEmail(profile._json.email);
+                    // login
+                    console.log(profile._json.email);
+                    console.log(userDB);
+                    if (userDB) {
+                        if (userDB.isGithub) {
+                        return done(null, userDB);
+                        } else {
+                        return done(null, false);
+                        }
+                    }
+                    // signup
+                    const infoUser = {
+                        name: profile._json.name.split(" ")[0], // ['farid','sesin']
+                        lastName: profile._json.name.split(" ")[1],
+                        email: profile._json.email,
+                        password: " ",
+                        isGithub: true,
+                    };
+                    const createdUser = await Users.createOne(infoUser);
+                    done(null, createdUser);
+                    } catch (error) {
+                    done(error);
+                    }
+                }
+                )
+            );
             // if (userDB) {
             // if (userDB.isGithub) {
             //     return done(null, userDB);
@@ -117,34 +143,34 @@ passport.use("github", new GithubStrategy(
             // password: " ",
             // isGithub: true,
             // };
-            console.log(userDB);
-            if (userDB) {
-                if (userDB.isGithub) {
-                    return done(null, userDB);
-                } else {
-                    return done(null, false);
-                }
-            }
+//             console.log(userDB);
+//             if (userDB) {
+//                 if (userDB.isGithub) {
+//                     return done(null, userDB);
+//                 } else {
+//                     return done(null, false);
+//                 }
+//             }
 
-            // signup
-            const nameParts = profile._json.name ? profile._json.name.split(" ") : [];
-            const infoUser = {
-                name: nameParts.length > 0 ? nameParts[0] : "DefaultName",
-                lastName: nameParts.length > 1 ? nameParts.slice(1).join(" ") : "DefaultLastName",
-                email: profile._json.email || "default@mail.com",
-                password: " ",
-                isGithub: true,
-            };
+//             // signup
+//             const nameParts = profile._json.name ? profile._json.name.split(" ") : [];
+//             const infoUser = {
+//                 name: nameParts.length > 0 ? nameParts[0] : "DefaultName",
+//                 lastName: nameParts.length > 1 ? nameParts.slice(1).join(" ") : "DefaultLastName",
+//                 email: profile._json.email || "default@mail.com",
+//                 password: " ",
+//                 isGithub: true,
+//             };
 
-            console.log(infoUser);
-            const createdUser = await Users.createOne(infoUser);
-            done(null, createdUser);
-        } catch (error) {
-            done(error);
-        }
-        }
-    )
-);
+//             console.log(infoUser);
+//             const createdUser = await Users.createOne(infoUser);
+//             done(null, createdUser);
+//         } catch (error) {
+//             done(error);
+//         }
+//         }
+//     )
+// );
 
 passport.serializeUser((user, done) => {
   // _id

@@ -13,17 +13,17 @@
 {{/if}}
 {{!-- 
 <div class="carrito">
-    <a href="/api/views/carts:{{cart.id}}" id="carritoLink">
+    <a href="/api/views/carts/:{{cart}}" id="carritoLink">
             <img class="imagen-carrito" src="https://cdn.pixabay.com/photo/2014/05/21/13/25/shopping-cart-349544_640.png" alt="Carrito de compras">
     </a>
     <span id="contadorCarrito">0</span>
-</div>
-<script>
+</div> --}}
+{{!-- <script>
     let contador = 0;
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
         contador++;
         actualizarContador();
-    });
+    }); 
 
     function actualizarContador() {
         document.getElementById('contadorCarrito').innerText = contador;
@@ -40,10 +40,11 @@
             <p>STOCK: {{stock}}</p>
             <p>CATEGORY: {{category}}</p>
             <img src="{{thumbail}}" alt="{{title}}">
-            <button class="boton" id="add-to-cart-btn" data-product-id="{{_id}}" onclick="addProductToCart({{_id}})">Add to Cart</button>
+            <button class="boton" id="add-to-cart-btn" data-product-id="{{_id}}" onclick="addProductToCart({{cart}},{{_id}})">Add to Cart</button>
         </div>
         {{/each}}
     </div>
+
 
     <div class="pagination">
         <button class="boton" id="prev-page" {{#if prevPage}}data-page="{{prevPage}}"{{/if}}>Previous Page</button>

@@ -20,9 +20,10 @@ router.get("/home", async (req, res) => {
         const result = clonedProducts;
         const paginate = products.info.pages;
         const sort = req.query.orders;
+        const cart = await Cart.createOne()
 
         console.log(req.user.name);
-        res.render("home",  { user: req.user, name: req.user.name, email : req.user.email, products: result, paginate: paginate, sort: sort, style:"product"} );
+        res.render("home",  { user: req.user, name: req.user.name, email : req.user.email, cart: cart._Id, products: result, paginate: paginate, sort: sort, style:"product"} );
     } catch (error) {
         console.error(error);
         res.status(500).send("Error interno del servidor");
@@ -31,6 +32,7 @@ router.get("/home", async (req, res) => {
 
 router.get("/login", (req, res) => {
         if (req.session.user) {
+            
             return res.redirect("/home", {style:"product"});}
     res.render("login", {style:"product"});
 });
