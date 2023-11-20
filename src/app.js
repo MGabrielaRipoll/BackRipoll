@@ -15,6 +15,8 @@ import MongoStore from "connect-mongo";
 // import { Manager } from './dao/fileSystem/ProductManager.js';
 import { messagesManager } from "./dao/MongoDB/messaggeManager.mongo.js";
 import "./DB/configDB.js";
+import "./passport.js";
+import passport from "passport";
 import fileStore from "session-file-store";
 const FileStore = fileStore(session);
 
@@ -24,10 +26,8 @@ const URI =
 "mongodb+srv://gabymaujw:Salmo374@cluster0.bs3x8cw.mongodb.net/ecommerce?retryWrites=true&w=majority";
 app.use(
     session({
-        resave: false,       
-        saveUninitialized: false,
         store: new MongoStore({
-        mongoUrl: URI,
+            mongoUrl: URI,
         }),
         secret: "secretSession",
         cookie: { maxAge: 60000 },
@@ -39,6 +39,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser("SecretCookie"));
 app.use('/public', express.static('public'));
 app.use(express.static(__dirname + "/public"));
+
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.engine("handlebars", engine());
 app.set("views", __dirname + "/views");

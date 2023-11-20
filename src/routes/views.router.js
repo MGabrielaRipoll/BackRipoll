@@ -9,6 +9,10 @@ import { Users } from '../dao/MongoDB/usersManager.mongo.js'
 const router = Router();
 
 router.get("/home", async (req, res) => {
+
+    if (!req.session.passport) {
+        return res.redirect("/api/views/login");
+    }
     try {
         const products = await Manager.findAll(req.query);
         const productsFinal = products.info.results;
@@ -16,38 +20,40 @@ router.get("/home", async (req, res) => {
         const result = clonedProducts;
         const paginate = products.info.pages;
         const sort = req.query.orders;
-        console.log(result);
-        res.render("home",  {users: req.session.user, products: result, paginate: paginate, sort: sort, style:"product"} );
+
+        console.log(req.user.name);
+        res.render("home",  { user: req.user, name: req.user.name, email : req.user.email, products: result, paginate: paginate, sort: sort, style:"product"} );
     } catch (error) {
         console.error(error);
         res.status(500).send("Error interno del servidor");
     }
 });
+
 router.get("/login", (req, res) => {
-    if (req.session) {
-        if (req.session.user) return res.redirect("/home");
-    }
-    res.render("login");
+        if (req.session.user) {
+            return res.redirect("/home", {style:"product"});}
+    res.render("login", {style:"product"});
 });
-  
+
 router.get("/signup", (req, res) => {
-    if (req.session) {
-        if (req.session.user) return res.redirect("/login");
+    if (req.session.user) {
+        return res.redirect("/login", {style:"product"});
     }
-    res.render("signup");
+    res.render("signup", {style:"product"})
 });
-  
-// router.get("/profile", (req, res) => {
-//     if (!req.session.user) {
-//         return res.redirect("/login");
-//     }
-//     console.log(req.session.user);
-//     res.render("profile", { user: req.session.user });
-// });
+
+router.get("/restaurar", (req, res) => {
+    res.render("restaurar", {style:"product"});
+});
+
+router.get("/error", (req, res) => {
+    res.render("error", {style:"product"});
+});
+
 
 router.get('/carts/:cid', async (req, res) => {
     const { cid } = req.params;
-
+    
     try {
         const cart = await Cart.findById(cid);
 

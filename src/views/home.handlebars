@@ -1,13 +1,34 @@
-
-{{#if users}}
+<header>
+    <h1>
+        PELIMANIA "LA RIPOLL"
+    </h1>
+</header>
+{{#if user}}
     <div class="userDiv">
-        <h2>WELCOME {{users.name}}</h2>
-        <h4>Your email is: {{users.email}} </h4>
-        <button><a href="/api/session/signout">SIGN OUT</a></button>
+        <h2>WELCOME {{name}}</h2>
+        <h4>Your email is: {{email}} </h4>
+        <button class="boton"><a href="/api/session/signout">SIGN OUT</a></button>
     </div>
 
 {{/if}}
+{{!-- 
+<div class="carrito">
+    <a href="/api/views/carts:{{cart.id}}" id="carritoLink">
+            <img class="imagen-carrito" src="https://cdn.pixabay.com/photo/2014/05/21/13/25/shopping-cart-349544_640.png" alt="Carrito de compras">
+    </a>
+    <span id="contadorCarrito">0</span>
+</div>
+<script>
+    let contador = 0;
+    document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+        contador++;
+        actualizarContador();
+    });
 
+    function actualizarContador() {
+        document.getElementById('contadorCarrito').innerText = contador;
+    }
+</script> --}}
 
 {{#if products.length}}
     <div class="product-cards">
@@ -19,14 +40,14 @@
             <p>STOCK: {{stock}}</p>
             <p>CATEGORY: {{category}}</p>
             <img src="{{thumbail}}" alt="{{title}}">
-            <button class="add-to-cart-btn" data-product-id="{{_id}}" onclick="addProductToCart({{_id}})">Add to Cart</button>
+            <button class="boton" id="add-to-cart-btn" data-product-id="{{_id}}" onclick="addProductToCart({{_id}})">Add to Cart</button>
         </div>
         {{/each}}
     </div>
 
     <div class="pagination">
-        <button id="prev-page" {{#if prevPage}}data-page="{{prevPage}}"{{/if}}>Previous Page</button>
-        <button id="next-page" {{#if nextPage}}data-page="{{nextPage}}"{{/if}}>Next Page</button>
+        <button class="boton" id="prev-page" {{#if prevPage}}data-page="{{prevPage}}"{{/if}}>Previous Page</button>
+        <button class="boton" id="next-page" {{#if nextPage}}data-page="{{nextPage}}"{{/if}}>Next Page</button>
     </div>
 {{else}}
     <p>No products available.</p>

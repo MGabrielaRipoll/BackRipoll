@@ -30,7 +30,6 @@ class ProductsManager {
                 : null,
         };
         const docs = response.docs;
-        console.log(info);
         return {info, docs};
     }
     

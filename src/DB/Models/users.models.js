@@ -20,9 +20,13 @@ const usersSchema = new mongoose.Schema({
     },
     isAdmin: {
         type: Boolean,
-    }
+        default: false,
+    },
+    isGithub: {
+        type: Boolean,
+        default: false,
+    },
 });
 
-// usersSchema.plugin(mongoosePaginate);
 
 export const usersModel = mongoose.model("Users", usersSchema);

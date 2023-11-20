@@ -61,7 +61,6 @@ router.put("/:pid", async (req, res) => {
     const { pid } = req.params;
     try {
         const response = await Manager.updateOne(pid, req.body);
-        console.log(req.body);
         if (!response) {
             return res
             .status(404)

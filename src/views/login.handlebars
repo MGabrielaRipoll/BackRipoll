@@ -3,16 +3,27 @@
     Password: <input type="password" name="password" id="password">
     <input type="submit" value="login">
 </form> --}}
+<header>
+    <h1>
+        PELIMANIA "LA RIPOLL"
+    </h1>
+</header>
 <body>
-    <h1>Iniciar sesión</h1>
-    <form action="/api/session/login" method="POST">
-        <label for="email">Correo electrónico:</label>
-        <input type="email" id="email" name="email" required>
-        <br>
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <input type="submit" value="Iniciar sesión">
-    </form>   
- 
+    <h2>Iniciar sesión</h2>
+    <div class="login-container">
+        <form action="/api/session/login" class="form-group" method="POST">
+            <label for="email">Correo electrónico:</label>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <input type="submit" class="boton" value="Iniciar sesión">
+        </form> 
+        <div class="boton-container">     
+            <button onclick="location.href='/api/session/auth/github'" class="boton">GITHUB</button>
+            <button class="boton"><a href="/api/views/restaurar">RESTAURAR PASSWORD</a></button>  
+        </div>
+    </div>
+    
 </body>
