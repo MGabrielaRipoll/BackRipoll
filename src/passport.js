@@ -2,6 +2,7 @@ import passport from "passport";
 import { Users } from "../src/dao/MongoDB/usersManager.mongo.js";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GithubStrategy } from "passport-github2";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { hashData, compareData } from "./utils.js";
 import { usersModel } from "../src/DB/Models/users.models.js";
 
@@ -91,87 +92,82 @@ passport.use("login", new LocalStrategy(
 
 // github
 passport.use("github", 
-        new GithubStrategy(
-                {
-                clientID: "Iv1.6148d02ed6d375ee",
-                clientSecret: "1050e5c6c7ff19340244b04987a39b4637cd3073",
-                callbackURL: "http://localhost:8080/api/session/callback",
-                scope: ["user:email"],
-                },
-                async (accessToken, refreshToken, profile, done) => {
-                try {
-                    console.log(profile);
-                    const userDB = await Users.findByEmail(profile._json.email);
-                    // login
-                    console.log(profile._json.email);
-                    console.log(userDB);
-                    if (userDB) {
-                        if (userDB.isGithub) {
-                        return done(null, userDB);
-                        } else {
-                        return done(null, false);
-                        }
-                    }
-                    // signup
-                    const infoUser = {
-                        name: profile._json.name.split(" ")[0], // ['farid','sesin']
-                        lastName: profile._json.name.split(" ")[1],
-                        email: profile._json.email,
-                        password: " ",
-                        isGithub: true,
-                    };
-                    const createdUser = await Users.createOne(infoUser);
-                    done(null, createdUser);
-                    } catch (error) {
-                    done(error);
+    new GithubStrategy (
+        {
+        clientID: "Iv1.6148d02ed6d375ee",
+        clientSecret: "1050e5c6c7ff19340244b04987a39b4637cd3073",
+        callbackURL: "http://localhost:8080/api/session/callback",
+        scope: ["user:email"],
+        },
+        async (accessToken, refreshToken, profile, done) => {
+            try {
+                console.log(profile);
+                const userDB = await Users.findByEmail(profile._json.email);
+                // login
+                console.log(profile._json.email);
+                console.log(userDB);
+                if (userDB) {
+                    if (userDB.isGithub) {
+                    return done(null, userDB);
+                    } else {
+                    return done(null, false);
                     }
                 }
-                )
-            );
-            // if (userDB) {
-            // if (userDB.isGithub) {
-            //     return done(null, userDB);
-            // } else {
-            //     return done(null, false);
-            // }
-            // }
-            // // signup
-            // const infoUser = {
-            // name: profile._json.name.split(" ")[0], // ['farid','sesin']
-            // lastName: profile._json.name.split(" ")[1],
-            // email: profile._json.email,
-            // password: " ",
-            // isGithub: true,
-            // };
-//             console.log(userDB);
-//             if (userDB) {
-//                 if (userDB.isGithub) {
-//                     return done(null, userDB);
-//                 } else {
-//                     return done(null, false);
-//                 }
-//             }
+                // signup
+                const infoUser = {
+                    name: profile._json.name.split(" ")[0], 
+                    lastName: profile._json.name.split(" ")[1],
+                    email: profile._json.email,
+                    password: " ",
+                    isGithub: true,
+                };
+                const createdUser = await Users.createOne(infoUser);
+                done(null, createdUser);
+                } catch (error) {
+                done(error);
+                }
+        }
+    )
+);
+// GOOGLE
 
-//             // signup
-//             const nameParts = profile._json.name ? profile._json.name.split(" ") : [];
-//             const infoUser = {
-//                 name: nameParts.length > 0 ? nameParts[0] : "DefaultName",
-//                 lastName: nameParts.length > 1 ? nameParts.slice(1).join(" ") : "DefaultLastName",
-//                 email: profile._json.email || "default@mail.com",
-//                 password: " ",
-//                 isGithub: true,
-//             };
-
-//             console.log(infoUser);
-//             const createdUser = await Users.createOne(infoUser);
-//             done(null, createdUser);
-//         } catch (error) {
-//             done(error);
-//         }
-//         }
-//     )
-// );
-
+passport.use("google", 
+    new GoogleStrategy (
+        {
+        clientID: "852727672259-33v3qr9j5aq8gvbsatg6coptnlao3bs8.apps.googleusercontent.com",
+        clientSecret: "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",
+        callbackURL: "http://localhost:8080/api/session/auth/google/callback",
+        },
+        async (accessToken, refreshToken, profile, done) => {
+            try {
+                console.log(profile);
+                const userDB = await Users.findByEmail(profile._json.email);
+                // login
+                console.log(profile._json.email);
+                console.log(userDB);
+                if (userDB) {
+                    if (userDB.isGoogle) {
+                    return done(null, userDB);
+                    } else {
+                    return done(null, false);
+                    }
+                }
+                // signup
+                const infoUser = {
+                    name: profile._json.given_name,
+                    lastName: profile._json.family_name,
+                    email: profile._json.email,
+                    password: " ",
+                    isGoogle: true,
+                };
+                const createdUser = await Users.createOne(infoUser);
+                done(null, createdUser);
+                } catch (error) {
+                done(error);
+                }
+        }
+    )
+);
 passport.serializeUser((user, done) => {
   // _id
     done(null, user._id);
