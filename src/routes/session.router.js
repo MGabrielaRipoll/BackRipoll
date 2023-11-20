@@ -89,11 +89,13 @@ router.post("/restaurar", async (req, res) => {
     try {
         const user = await Users.findByEmail(email);
         if (!user) {
+
             return res.redirect("/api/session/signup");
         }
         const hashedPassword = await hashData(password);
         user.password = hashedPassword;
         await user.save();
+        
         res.redirect("/api/views/login")
         // res.status(200).json({ message: "Password updated" });
         } catch (error) {
