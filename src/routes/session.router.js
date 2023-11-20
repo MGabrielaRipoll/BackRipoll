@@ -56,14 +56,14 @@ const router = Router();
 
 router.post("/signup",(req, res, next)=>{ passport.authenticate("signup", {
         successRedirect: '/api/views/home',
-        failureRedirect: '/api/views/error'
+        failureRedirect: '/api/views/login'
         })(req, res, next)
     });
     
 router.post('/login', (req, res, next) => {
     passport.authenticate('login', { // Asegúrate de que 'req' esté disponible aquí
         successRedirect: '/api/views/home',
-        failureRedirect: '/api/views/error'
+        failureRedirect: '/api/views/signup'
     })(req, res, next);
 });
     
