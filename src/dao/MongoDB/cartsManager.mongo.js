@@ -41,7 +41,13 @@ class CartsManager {
                     quantity: 1,
                 });
             }   
-            return selectedCart.save();
+            console.log(selectedCart);
+            // let suma = 0
+            // let contadorTotal = selectedCart.products.forEach(element => { element.quantity })
+            // let precioTotal = selectedCart.products.forEach(element => { element.quantity * element.price + precioTotal
+            // })
+            // console.log("contadorTotal", contadorTotal);
+            return (selectedCart.save());
         }
     }   
     async deleteOne(cid, pid) {

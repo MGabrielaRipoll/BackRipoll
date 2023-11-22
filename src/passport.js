@@ -102,7 +102,7 @@ passport.use("github",
         async (accessToken, refreshToken, profile, done) => {
             try {
                 console.log(profile);
-                const userDB = await Users.findByEmail(profile._json.email);
+                const userDB = await Users.findByEmail(profile.emails[0].value);
                 // login
                 console.log(profile._json.email);
                 console.log(userDB);
@@ -117,7 +117,7 @@ passport.use("github",
                 const infoUser = {
                     name: profile._json.name.split(" ")[0], 
                     lastName: profile._json.name.split(" ")[1],
-                    email: profile._json.email,
+                    email: profile.emails[0].value,
                     password: " ",
                     isGithub: true,
                 };
