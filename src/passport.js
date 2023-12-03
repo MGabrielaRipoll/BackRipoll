@@ -1,10 +1,12 @@
 import passport from "passport";
 import { Users } from "../src/dao/MongoDB/usersManager.mongo.js";
+import { Cart } from '../src/dao/MongoDB/cartsManager.mongo.js'
+import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GithubStrategy } from "passport-github2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { hashData, compareData } from "./utils.js";
-import { usersModel } from "../src/DB/Models/users.models.js";
+import { generateToken } from "./utils.js";
 
 // local
 
@@ -13,13 +15,17 @@ passport.use("signup", new LocalStrategy(
         async (req, email, password, done) => {
         const { name, lastName } = req.body;
         if (!name || !lastName || !email || !password) {
-            return done(null, false);
+            return done(null, false, {message: 'All fields are required'});
         }
+        
+        const cart = await Cart.createOne();
+        
         try {
             const hashedPassword = await hashData(password);
             const createdUser = await Users.createOne({
             ...req.body,
             password: hashedPassword,
+            cartId : cart._id,
             });
             done(null, createdUser);
         } catch (error) {
@@ -65,23 +71,23 @@ passport.use("login", new LocalStrategy(
         const req = this;
 
         if (!email || !password) {
-            return done(null, false);
+            return done(null, false, { message: "Email and password are required" });
         }
 
         try {
             const user = await Users.findByEmail(email);
-            console.log(user);
+    
             if (!user) {
-                return done(null, false);
+                return done(null, false, { message: "User not found" });
             }
             
             const isPasswordValid = await compareData(password, user.password);
-            console.log(isPasswordValid);
             if (!isPasswordValid) {
-                return done(null, false);
+                return done(null, false, { message: "Invalid password" });
             }
-            
-            // La autenticación fue exitosa, se proporciona el usuario autenticado
+            // const token = generateToken(user);
+            // req.cookies.token = token
+            // res.json({ token });
             return done(null, user);
         } catch (error) {
             return done(error); // Devuelve el error a Passport
@@ -101,25 +107,23 @@ passport.use("github",
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
-                console.log(profile);
+                
                 const userDB = await Users.findByEmail(profile.emails[0].value);
                 // login
-                console.log(profile._json.email);
-                console.log(userDB);
+
                 if (userDB) {
-                    if (userDB.isGithub) {
                     return done(null, userDB);
-                    } else {
-                    return done(null, false);
-                    }
-                }
+                    } 
+
+                const cart = await Cart.createOne();
+
                 // signup
                 const infoUser = {
                     name: profile._json.name.split(" ")[0], 
                     lastName: profile._json.name.split(" ")[1],
                     email: profile.emails[0].value,
                     password: " ",
-                    isGithub: true,
+                    cartId: cart._id,
                 };
                 const createdUser = await Users.createOne(infoUser);
                 done(null, createdUser);
@@ -140,26 +144,22 @@ passport.use("google",
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
-                console.log(profile);
+
                 const userDB = await Users.findByEmail(profile._json.email);
                 // login
-                console.log(profile._json.email);
-                console.log(userDB);
+             
                 if (userDB) {
-                    if (userDB.isGoogle) {
                     return done(null, userDB);
-                    } else {
-                    return done(null, false);
-                    }
-                }
+                    } 
                 // signup
+                const cart = await Cart.createOne();
+
                 const infoUser = {
                     name: profile._json.given_name,
                     lastName: profile._json.family_name,
                     email: profile._json.email,
                     password: " ",
-                    isGoogle: true,
-                };
+                    cartId: cart._id,                };
                 const createdUser = await Users.createOne(infoUser);
                 done(null, createdUser);
                 } catch (error) {
@@ -168,6 +168,41 @@ passport.use("google",
         }
     )
 );
+const fromCookies = (req) => {
+    return req.cookies.token;
+}
+passport.use('current', new JWTStrategy({
+    jwtFromRequest: ExtractJwt.fromExtractors([fromCookies]),
+    secretOrKey: "secretJWT",
+}, async (jwt_payload, done) => {
+    try {
+        console.log(jwt_payload);
+        const user = await Users.findByEmail(jwt_payload.mail);
+        console.log(user);
+        if (!user) {
+            return done(null, false, { message: 'Usuario no encontrado' });
+        }
+        return done(null, user);}
+            catch (error) {
+                return error
+            }
+}));
+
+passport.use(
+    "jwt",
+    new JWTStrategy(
+    {
+        //jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        jwtFromRequest: ExtractJwt.fromExtractors([fromCookies]),
+        secretOrKey: "secretJWT",
+    },
+    async function (jwt_payload, done) {
+        console.log(jwt_payload);
+        done(null, jwt_payload);
+    }
+    )
+);
+
 passport.serializeUser((user, done) => {
   // _id
     done(null, user._id);
@@ -181,3 +216,6 @@ passport.deserializeUser(async (id, done) => {
         done(error);
     }
 });
+
+
+  

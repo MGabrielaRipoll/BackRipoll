@@ -14,7 +14,15 @@ const cartsSchema = new mongoose.Schema({
             },
             _id: false,
         }   
-    ]
+    ],
+    totalProducts : {
+        type : Number,
+        default : 0,
+    },
+    totalPrice : {
+        type : Number,
+        default : 0,
+    }
 });
 
 export const cartsModel = mongoose.model("Carts", cartsSchema);

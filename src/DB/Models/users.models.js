@@ -9,6 +9,9 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    age: {
+        type: Number,
+    },
     email: {
         type: String,
         required: true,
@@ -18,17 +21,13 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    isAdmin: {
-        type: Boolean,
-        default: false,
+    cartId: {
+        type: Object,
     },
-    isGithub: {
-        type: Boolean,
-        default: false,
-    },
-    isGoogle: {
-        type: Boolean,
-        default: false,
+    role: {
+        type: String,
+        enum: ["ADMIN", "USER"],
+        default: 'USER',
     },
 });
 

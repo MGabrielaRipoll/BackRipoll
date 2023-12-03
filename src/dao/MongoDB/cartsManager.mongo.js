@@ -1,4 +1,5 @@
 import { cartsModel } from "../../DB/Models/carts.models.js";
+import { Manager } from "./productManager.mongo.js";
 
 class CartsManager {
     async findAll() {
@@ -29,7 +30,6 @@ class CartsManager {
     
     async addProductToCart(cid, pid) {
         const selectedCart = await cartsModel.findById(cid);
-        
         if (selectedCart) {
             const productIndex = selectedCart.products.findIndex(p => p.product.equals(pid));   
             console.log(productIndex);
@@ -41,12 +41,19 @@ class CartsManager {
                     quantity: 1,
                 });
             }   
-            console.log(selectedCart);
-            // let suma = 0
-            // let contadorTotal = selectedCart.products.forEach(element => { element.quantity })
-            // let precioTotal = selectedCart.products.forEach(element => { element.quantity * element.price + precioTotal
-            // })
-            // console.log("contadorTotal", contadorTotal);
+            // Calcular la cantidad total de productos y el precio total
+            const totalProducts = selectedCart.products.reduce((total, product) => total + product.quantity, 0);
+            let totalPrice = 0;
+            selectedCart.products.forEach(async cartProduct => {
+                // Obtener el precio del producto desde el modelo Product
+                const product = await Manager.findById(cartProduct.product);
+                const productPriceUnit = product ? product.price : 0;
+                const individualProductPrice = cartProduct.quantity * productPriceUnit;
+                totalPrice += individualProductPrice;
+            });
+            selectedCart.totalProducts = totalProducts;
+            selectedCart.totalPrice = totalPrice;
+            console.log(totalProducts, totalPrice);
             return (selectedCart.save());
         }
     }   
@@ -60,7 +67,18 @@ class CartsManager {
                     selectedCart.products[productIndex].quantity -= 1;
                 } else {
                     selectedCart.products.splice(productIndex, 1);
-                }    
+                } 
+                const totalProducts = selectedCart.products.reduce((total, product) => total + product.quantity, 0);
+                let totalPrice = 0;
+                selectedCart.products.forEach(async cartProduct => {
+                    // Obtener el precio del producto desde el modelo Product
+                    const product = await Manager.findById(cartProduct.product);
+                    const productPriceUnit = product ? product.price : 0;
+                    const individualProductPrice = cartProduct.quantity * productPriceUnit;
+                    totalPrice += individualProductPrice;
+                });
+                selectedCart.totalProducts = totalProducts;
+                selectedCart.totalPrice = totalPrice;   
                 return selectedCart.save();
             }
         }
@@ -73,6 +91,8 @@ class CartsManager {
         } else {
             res.status(200).json({ message: "Cart not found"});
         }
+        selectedCart.totalProducts = 0,
+        selectedCart.totalPrice = 0
         return selectedCart.save();
     }
 
@@ -85,7 +105,18 @@ class CartsManager {
                 selectedCart.products[productIndex].quantity = quantity;
             } else {            
                 selectedCart.products.push({ product: pid, quantity: quantity });
-            }           
+            }     
+            const totalProducts = selectedCart.products.reduce((total, product) => total + product.quantity, 0);
+                let totalPrice = 0;
+                selectedCart.products.forEach(async cartProduct => {
+                    // Obtener el precio del producto desde el modelo Product
+                    const product = await Manager.findById(cartProduct.product);
+                    const productPriceUnit = product ? product.price : 0;
+                    const individualProductPrice = cartProduct.quantity * productPriceUnit;
+                    totalPrice += individualProductPrice;
+                });
+                selectedCart.totalProducts = totalProducts;
+                selectedCart.totalPrice = totalPrice;       
             return selectedCart.save();
         }
     }
