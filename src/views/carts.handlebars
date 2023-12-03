@@ -14,19 +14,18 @@
             <img src="{{product.thumbail}}" alt="{{product.title}}">
             <div class="botonesQuantity">
 
-                <button class="add-to-cart-btn">-</button>
+                <button class="add-to-cart-btn" onclick="deleteOne('{{cid}}','{{product._id}}')">-</button>
 
                 <p> QUANTITY: {{quantity}}</p>
 
-                <button class="add-to-cart-btn">+</button>
+                <button class="add-to-cart-btn" onclick="addProductToCart('{{cid}}','{{product._id}}')">+</button>
 
             </div>
-            
-            {{!-- <p>PRICE: ${{product.price}} * {{quantity}}</p> --}}
             <p>CATEGORY: {{product.category}}</p>
-            <button class="add-to-cart-btn" data-product-id="{{product._id}}">Remove to Cart</button>
+            <button class="add-to-cart-btn" data-product-id="{{product._id}}" onclick="deleteAll('{{cid}}')">Remove all to Cart</button>
         </div>
         {{/each}}
+
     </div>
 
 {{else}}

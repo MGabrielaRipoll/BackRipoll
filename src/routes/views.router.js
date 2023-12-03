@@ -89,7 +89,7 @@ router.get('/carts/:cid', async (req, res) => {
 
         
         console.log(cartProducts);
-        res.render('carts', { products:cartProducts, style:"product" });
+        res.render('carts', { cid : cid, products:cartProducts, style:"product" });
     } catch (error) {
         console.error(error);
         res.status(500).send('Error interno del servidor');

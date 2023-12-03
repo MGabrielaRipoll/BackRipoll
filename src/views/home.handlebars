@@ -3,6 +3,8 @@
         PELIMANIA "LA RIPOLL"
     </h1>
 </header>
+
+
 {{#if user}}
     <div class="userDiv">
         <h2>WELCOME {{name}}</h2>
@@ -12,23 +14,13 @@
 
 {{/if}}
 
-{{!-- <div class="carrito">
+<div class="carrito">
     <a href="/api/views/carts/:{{cartId}}" id="carritoLink">
             <img class="imagen-carrito" src="https://cdn.pixabay.com/photo/2014/05/21/13/25/shopping-cart-349544_640.png" alt="Carrito de compras">
     </a>
     <span id="contadorCarrito">0</span>
-</div> --}}
-{{!-- <script>
-    let contador = 0;
-    document.getElementById('add-to-cart-btn').addEventListener('click', () => {
-        contador++;
-        actualizarContador();
-    }); 
+</div>
 
-    function actualizarContador() {
-        document.getElementById('contadorCarrito').innerText = contador;
-    }
-</script> --}}
 
 {{#if products.length}}
     <div class="product-cards">
@@ -39,17 +31,9 @@
             <p>PRICE: ${{price}}</p>
             <p>STOCK: {{stock}}</p>
             <p>CATEGORY: {{category}}</p>
-            <img src="{{thumbail}}" alt="{{title}}">
-            {{!-- <form id="addToCartForm" action="../src/routes/cart.router.js" method="POST">
-            <input type="hidden" name="cartId" value="{{cartId}}">
-            <input type="hidden" name="products" value="products">
-            <input type="hidden" name="productId" value="{{_id}}">
-            <button type="submit" class="boton">Add to Cart</button>
-            </form> --}}
+            <img src="{{thumbail}}" alt="{{title}}">          
             <button class="boton" id="add-to-cart-btn" data-product-id="{{_id}}" onclick="addProductToCart('{{cartId}}', '{{_id}}')">Add to Cart</button>
 
-
-            {{!-- <button class="boton" id="add-to-cart-btn" data-product-id="{{_id}}" onclick="addProductToCart('{{cartId}}', '{{_id}}')">Add to Cart</button> --}}
         </div>
         {{/each}}
     </div>
