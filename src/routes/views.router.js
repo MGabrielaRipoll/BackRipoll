@@ -12,6 +12,7 @@ import passport from "passport";
 const router = Router();
 
 router.get("/home", passport.authenticate('current', { session: false }), async (req, res) => {
+    console.log("cookie", req.cookies.token);
     if (!req.cookies.token) {
         return res.redirect("/api/views/login");
     }
@@ -23,7 +24,7 @@ router.get("/home", passport.authenticate('current', { session: false }), async 
         const result = clonedProducts;
         const paginate = products.info.pages;
         const sort = req.query.orders;
-        res.render("home",  { cartId: req.user.cartId, user: req.user, name: req.user.name, email : req.user.email, products: result, paginate: paginate, sort: sort, style:"product"} );
+        res.render("home",  { cartId: req.user.cartId, user: req.user, name: req.user.name, email : req.user.email, products: result, paginate: paginate, sort: sort, style: "product" } );
     } catch (error) {
         console.error(error);
         res.status(500).send("Error interno del servidor");
@@ -51,24 +52,25 @@ router.get("/home", passport.authenticate('current', { session: false }), async 
 // });
 
 router.get("/login", (req, res) => {
+    console.log("cookies", req.cookies.token);
         if (req.cookies.token) {    
-            return res.redirect("/home", {style:"product"});
+            return res.redirect("/home", { style:"product" });
         }
-    res.render("login", {style:"product"});
+    res.render("login", { style:"product" });
 });
 
 router.get("/signup", async (req, res) => {
 
     if (req.session.user) {
         
-        return res.redirect("/login", { style:"product"})    
+        return res.redirect("/login", { style:"product" })    
     }
     
-    res.render("signup", {style:"product"})
+    res.render("signup", { style:"product" })
 });
 
 router.get("/restaurar", (req, res) => {
-    res.render("restaurar", {style:"product"});
+    res.render("restaurar", { style:"product" });
 });
 
 router.get("/error", (req, res) => {

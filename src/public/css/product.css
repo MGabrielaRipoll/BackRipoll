@@ -68,8 +68,18 @@ body {
   .carrito{
     width: 50px;
     height: 50px;
-
   }
+  .imagen-carrito {
+    width: 50px;
+    height: 50px;
+    padding: 5px 10px; 
+    border-radius: 50%; 
+    position: fixed; 
+    top: 50%; 
+    right: 0; 
+    transform: translate(-50%, -50%);
+  }
+
   .logo{
     margin: 2px;
     width: 15px;
@@ -80,9 +90,10 @@ body {
     color: #ffffff; 
     padding: 5px 10px; 
     border-radius: 50%; 
-    position: absolute; 
-    bottom: 0; 
-    right: 0;
+    position: fixed; 
+    top: 52%; 
+    right: 0; 
+    transform: translate(-50%, -50%);
 }
   .boton {
     background-color: #007bff;

@@ -85,6 +85,7 @@ passport.use("login", new LocalStrategy(
             if (!isPasswordValid) {
                 return done(null, false, { message: "Invalid password" });
             }
+            console.log("user passport", user);
             // const token = generateToken(user);
             // req.cookies.token = token
             // res.json({ token });
@@ -125,6 +126,7 @@ passport.use("github",
                     password: " ",
                     cartId: cart._id,
                 };
+                console.log(infoUser);
                 const createdUser = await Users.createOne(infoUser);
                 done(null, createdUser);
                 } catch (error) {
@@ -218,4 +220,3 @@ passport.deserializeUser(async (id, done) => {
 });
 
 
-  

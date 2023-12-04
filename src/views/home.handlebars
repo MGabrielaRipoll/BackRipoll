@@ -4,6 +4,8 @@
     </h1>
 </header>
 
+<script src="/functions.js"></script>
+
 
 {{#if user}}
     <div class="userDiv">
@@ -15,8 +17,8 @@
 {{/if}}
 
 <div class="carrito">
-    <a href="/api/views/carts/:{{cartId}}" id="carritoLink">
-            {{!-- <img class="imagen-carrito" src="https://cdn.pixabay.com/photo/2014/05/21/13/25/shopping-cart-349544_640.png" alt="Carrito de compras"> --}}
+    <a href="/api/views/carts/{{cartId}}" id="carritoLink">
+        <img class="imagen-carrito" src="https://cdn.pixabay.com/photo/2014/05/21/13/25/shopping-cart-349544_640.png" alt="Carrito de compras">
     </a>
     <span id="contadorCarrito">0</span>
 </div>
@@ -32,7 +34,7 @@
             <p>STOCK: {{stock}}</p>
             <p>CATEGORY: {{category}}</p>
             <img src="{{thumbail}}" alt="{{title}}">          
-            <button class="boton" id="add-to-cart-btn" data-product-id="{{_id}}" onclick="addProductToCart('{{cartId}}', '{{_id}}')">Add to Cart</button>
+            <button class="boton" id="add-to-cart-btn" data-product-id="{{_id}}" onclick="addToCart('{{cartId}}', '{{_id}}')">Add to Cart</button>
 
         </div>
         {{/each}}

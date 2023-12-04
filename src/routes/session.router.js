@@ -75,8 +75,31 @@ router.post("/signup",(req, res, next)=>{ passport.authenticate("signup", {
         })(req, res, next)
     });
 
+    
+// router.post('/login', (req, res, next) => {
+//     passport.authenticate('login', (err, user) => {
+//         console.log("user", user);
+//         if (user) {
+//             return next(err);
+//         }
+//         if (!user) {
+//             return res.redirect('/api/views/signup'); 
+//         }
+//         const payload = {
+//             sub: user._id, 
+//             name: user.name,
+//             mail : user.email,
+//             role: user.role,
+//         };
+//         // Generar el token JWT
+//         const token = generateToken(payload);
+//             res.cookie('token', token, { maxAge: 60000, httpOnly: true });
+//             return res.redirect('/api/views/home');
+//         })(req, res, next);
+//     });
     router.post('/login', (req, res, next) => {
-        passport.authenticate('login', (err, user) => {
+        passport.authenticate("login", (err, user) => {
+            console.log("user", user, req.user, req.cookies.token);
             if (err) {
                 return next(err);
             }
@@ -95,7 +118,6 @@ router.post("/signup",(req, res, next)=>{ passport.authenticate("signup", {
             return res.redirect('/api/views/home');
         })(req, res, next);
     });
-    
 
 
 
@@ -132,12 +154,21 @@ router.post("/signup",(req, res, next)=>{ passport.authenticate("signup", {
 // });
 
 //   GIT HUB
-
 router.get("/auth/github", passport.authenticate("github", { 
     scope: ["user:email"] })
 );
 
 router.get("/callback", passport.authenticate("github"), (req, res) => {
+    console.log(req.user);
+    const payload = {
+        sub: req.user._id, 
+        name: req.user.name,
+        mail : req.user.email,
+        role: req.user.role,
+    };
+    // Generar el token JWT
+    const token = generateToken(payload);
+    res.cookie('token', token, { maxAge: 60000, httpOnly: true });
     res.redirect("/api/views/home");
 });
 
@@ -152,16 +183,32 @@ router.get(
     "/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/api/views/error" }),
     (req, res) => {
-        console.log(req);
+        console.log(req.user);
+        const payload = {
+            sub: req.user._id, 
+            name: req.user.name,
+            mail : req.user.email,
+            role: req.user.role,
+        };
+        // Generar el token JWT
+        const token = generateToken(payload);
+        res.cookie('token', token, { maxAge: 60000, httpOnly: true });
+
         res.redirect("/api/views/home");
     }
 );
+// signuot con session
+// router.get("/signout", (req, res) => {
+//     req.session.destroy(() => {
+//         res.redirect("/api/views/login");
+//     });
+// });
 
 router.get("/signout", (req, res) => {
-    req.session.destroy(() => {
-        res.redirect("/api/views/login");
-    });
+    res.clearCookie('token');
+    res.redirect("/api/views/login");
 });
+
 
 router.post("/restaurar", async (req, res) => {
     const { email, password } = req.body;
