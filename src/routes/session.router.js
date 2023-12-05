@@ -70,8 +70,8 @@ const router = Router();
 //     }
 //   );
 router.post("/signup",(req, res, next)=>{ passport.authenticate("signup", {
-        successRedirect: '/api/views/home',
-        failureRedirect: '/api/views/login'
+        successRedirect: '/api/views/login',
+        failureRedirect: '/api/views/error'
         })(req, res, next)
     });
 
