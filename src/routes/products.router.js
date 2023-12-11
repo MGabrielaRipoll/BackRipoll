@@ -1,95 +1,33 @@
 import {Router} from 'express'
 import { __dirname } from "../utils.js"
-// import {Manager} from '../dao/fileSystem/ProductManager.js'
-import { Manager } from '../dao/MongoDB/productManager.mongo.js'
+import { findProductById, findAllProduct, createOneProduc, deleteOneProdAll, updateProducts } from '../controllers/products.controller.js';
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-    
-    try {
-        const products = await Manager.findAll(req.query); 
-        res.status(200).json({ message: "Product found", products });   
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+router.get("/", findAllProduct)
+router.get("/:pid", findProductById)
+router.post("/", createOneProduc)
+router.delete("/:pid", deleteOneProdAll)
+router.put("/:pid", updateProducts)
 
-router.get("/:pid", async (req, res) => {
-    const { pid } = req.params;
-    try {
-        const product = await Manager.findById(pid);
-        if (!product) {
-            return res
-            .status(404)
-            .json({ message: "Product not found with the id provided" });
-        }
-        res.status(200).json({ message: "Product found", product });
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    });
-""
-router.post("/", async (req, res) => {
-    const { title, description, price, code, stock, category } = req.body;
+// router.post("/change", async (req, res) => {
+//     const accion = req.body.accion;
+//     const id = req.body.id;
 
-    if (!title || !description || !price || !code || !stock || ! category) {
-        return res.status(400).json({ message: "Some data is missing" });
-    }
-    try {
-        const response = await Manager.createOne(req.body);
-        res.status(200).json({ message: "Producto created", response });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
-router.delete("/:pid", async (req, res) => {
-    const { pid } = req.params;
-    try {
-        const response = await Manager.deleteOne(pid);
-        if (!response) {
-            return res
-            .status(404)
-            .json({ message: "Product not found with the id provided" });
-        }
-        res.status(200).json({ message: "Product deleted" });
-        } catch (error) {
-        res.status(500).json({ message: error.message });
-        }
-    });
-router.put("/:pid", async (req, res) => {
-    const { pid } = req.params;
-    try {
-        const response = await Manager.updateOne(pid, req.body);
-        if (!response) {
-            return res
-            .status(404)
-            .json({ message: "Product not found with the id provided" });
-        }
-        res.status(200).json({ message: "Product updated", response });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+//     try {
+//         if (accion === "AGREGAR") {
+//             const productNew = Manager.createOne(req.body);
+//         } 
+//         else {
+//             Manager.deleteOne(+id);
+//         }
+//         res.status(200).send("Operación exitosa");
 
-router.post("/change", async (req, res) => {
-    const accion = req.body.accion;
-    const id = req.body.id;
-
-    try {
-        if (accion === "AGREGAR") {
-            const productNew = Manager.createOne(req.body);
-        } 
-        else {
-            Manager.deleteOne(+id);
-        }
-        res.status(200).send("Operación exitosa");
-
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).send("Error interno del servidor");
-    }
-});
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Error interno del servidor");
+//     }
+// });
 
 
 export default router

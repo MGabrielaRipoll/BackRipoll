@@ -1,6 +1,6 @@
 import passport from "passport";
-import { Users } from "../src/dao/MongoDB/usersManager.mongo.js";
-import { Cart } from '../src/dao/MongoDB/cartsManager.mongo.js'
+import { Users } from "../src/daos/MongoDB/usersManager.mongo.js";
+import { Cart } from '../src/daos/MongoDB/cartsManager.mongo.js'
 import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GithubStrategy } from "passport-github2";

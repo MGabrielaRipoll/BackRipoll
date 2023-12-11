@@ -3,10 +3,6 @@ import { productsModel } from "../../DB/Models/products.models.js";
 
 
 class ProductsManager {
-    // async findAll() {
-    //     const result = await productsModel.find().lean();
-    //     return result;
-    // }
     async findAll(obj) {
         const { limit = 20, page = 1, orders = 1, ...filter } = obj;
         const options = {

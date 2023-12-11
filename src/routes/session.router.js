@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Users } from "../dao/MongoDB/usersManager.mongo.js";
+import { Users } from "../daos/MongoDB/usersManager.mongo.js";
 import { hashData, compareData } from "../utils.js";
 import { generateToken } from "../utils.js";
 
