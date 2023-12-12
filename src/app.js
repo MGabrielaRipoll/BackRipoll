@@ -18,12 +18,13 @@ import "./DB/configDB.js";
 import "./passport.js";
 import passport from "passport";
 import fileStore from "session-file-store";
+import  config  from "../src/config/config.js";
 const FileStore = fileStore(session);
 
-
+// const PORT = config.port;
+// console.log(PORT);
 const app = express();
-const URI =
-"mongodb+srv://gabymaujw:Salmo374@cluster0.bs3x8cw.mongodb.net/ecommerce?retryWrites=true&w=majority";
+const URI = config.mongo_uri;
 app.use(
     session({
         store: new MongoStore({
@@ -58,9 +59,8 @@ app.use("/api/session", sessionRouter);
 app.use('/api/chat', chatsRouter);
 
 
-
 const httpServer = app.listen(8080, () => {
-    console.log("Escuchando al puerto 8080");
+    console.log('Escuchando al puerto 8080');
 });
 
 const socketServer = new Server(httpServer);

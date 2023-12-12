@@ -2,9 +2,9 @@ import { dirname } from "path";
 import bcrypt from "bcrypt";
 import { fileURLToPath } from "url";
 import jwt from "jsonwebtoken";
+import config from "../src/config/config.js"
 
-
-const SECRET_KEY_JWT = "secretJWT";
+const secretKeyJwt = config.secret_jwt;
 
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -18,7 +18,7 @@ export const compareData = async (data, hashedData) => {
 };
 
 export const generateToken = (user) => {
-    const token = jwt.sign(user, SECRET_KEY_JWT, { expiresIn: 3600 });
+    const token = jwt.sign(user, secretKeyJwt, { expiresIn: 3600 });
     console.log("token", token);
     return token;
 };

@@ -6,10 +6,11 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GithubStrategy } from "passport-github2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { hashData, compareData } from "./utils.js";
-import { generateToken } from "./utils.js";
-
+import config from "../src/config/config.js";
 // local
 
+const secretKeyJwt = config.secret_jwt;
+console.log(config.secret_jwt);
 passport.use("signup", new LocalStrategy(
         { passReqToCallback: true, usernameField: "email" },
         async (req, email, password, done) => {
@@ -175,7 +176,7 @@ const fromCookies = (req) => {
 }
 passport.use('current', new JWTStrategy({
     jwtFromRequest: ExtractJwt.fromExtractors([fromCookies]),
-    secretOrKey: "secretJWT",
+    secretOrKey: secretKeyJwt,
 }, async (jwt_payload, done) => {
     try {
         console.log(jwt_payload);
@@ -196,7 +197,7 @@ passport.use(
     {
         //jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         jwtFromRequest: ExtractJwt.fromExtractors([fromCookies]),
-        secretOrKey: "secretJWT",
+        secretOrKey: secretKeyJwt,
     },
     async function (jwt_payload, done) {
         console.log(jwt_payload);
