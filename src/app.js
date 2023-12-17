@@ -45,6 +45,7 @@ app.use(express.static(__dirname + "/public"));
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cookieParser());
 
 
 app.engine("handlebars", engine());

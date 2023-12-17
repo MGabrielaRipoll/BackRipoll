@@ -1,92 +1,35 @@
 
-// async function addToCart(cartId, _id) {
-//     // first get the cart id from the session
-//     try {
-//         const url = 'http://localhost:8080/api/cart/cid'
-//         const options = {
-//             method: 'GET',
-//         }
-//         await fetch(url, options)
-//             .then((response) => {
-//             // evaluate the API response
-//             console.log(response);
-//             if (!response.ok) throw new Error(response.error)
-//             return response.json()
-//             })
-//             .then((data) => {
-//             const cartId = data.cartId
-//             const url = 'http://localhost:8080/api/cart/' + cartId + '/products/' + _id
-//             const options = {
-//                 method: 'POST',
-//                 headers: {
-//                 'Content-Type': 'application/json'
-//                 },
-//                 body: JSON.stringify({ quantity: 1 })
-//             }
-//             fetch(url, options)
-//                 .then((response) => {
-//                 // evaluate the API response
-//                 if (!response.ok) throw new Error(response.error)
-//                 })
-//             })
-//         } catch (error) {
-//             console.log(error)
-//             return false
-//         }
-// }
-async function addToCart(cartId, productId) {
-    try {
-        // Obtener el cartId desde la sesión o de donde sea necesario
-        const cartIdFromSession = await fetchCartIdFromSession();
-        
-        // Comprobar si se obtuvo correctamente el cartId
-        if (!cartIdFromSession) {
-            console.error('No se pudo obtener el cartId');
-            return false;
-        }
+const addToCart = async (cartId, _id) => {
+    const url = `http://localhost:8080/api/cart/${cartId}/products/${_id}`;
+    const data = {
+        cartId: cartId,
+        _id: _id,
 
-        const url = `http://localhost:8080/api/cart/${cartIdFromSession}/products/${productId}`;
-        const options = {
-            method: 'POST',
+    };
+
+    console.log("cart", cartId, "product", _id);
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
+                // Add any additional headers as needed
             },
-            body: JSON.stringify({ quantity: 1 })
-        };
+            body: JSON.stringify(data),
+        });
 
-        // Realizar la solicitud para agregar el producto al carrito
-        const response = await fetch(url, options);
-
-        // Evaluar la respuesta de la API
         if (!response.ok) {
-            console.error('Error al agregar el producto al carrito:', response.statusText);
-            return false;
+            // Handle non-successful responses here
+            console.error("Error adding product to cart:", response.status, response.statusText);
+            return;
         }
 
-        console.log('Producto agregado al carrito con éxito');
-        return true;
-
+        const result = await response.json();
+        console.log("Product added to cart:", result);
     } catch (error) {
-        console.error('Error inesperado:', error);
-        return false;
+        // Handle fetch errors here
+        console.error("Fetch error:", error.message);
     }
-}
+};
 
-async function fetchCartIdFromSession() {
-    try {
-        const url = 'http://localhost:8080/api/cart/cid';
-        const response = await fetch(url);
-        // Evaluar la respuesta de la API
-        if (!response.ok) {
-            console.error('Error al obtener el cartId:', response.statusText);
-            return null;
-        }
-
-        const data = await response.json();
-        return data.cartId;
-
-    } catch (error) {
-        console.error('Error al obtener el cartId:', error);
-        return null;
-    }
-}

@@ -10,6 +10,7 @@ router.post("/", createOneProduc)
 router.delete("/:pid", deleteOneProdAll)
 router.put("/:pid", updateProducts)
 
+
 // router.post("/change", async (req, res) => {
 //     const accion = req.body.accion;
 //     const id = req.body.id;

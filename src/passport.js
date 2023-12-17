@@ -70,14 +70,11 @@ passport.use("login", new LocalStrategy(
     { usernameField: "email" },
     async (email, password, done) => {
         const req = this;
-
         if (!email || !password) {
             return done(null, false, { message: "Email and password are required" });
         }
-
         try {
             const user = await Users.findByEmail(email);
-    
             if (!user) {
                 return done(null, false, { message: "User not found" });
             }
@@ -87,9 +84,7 @@ passport.use("login", new LocalStrategy(
                 return done(null, false, { message: "Invalid password" });
             }
             console.log("user passport", user);
-            // const token = generateToken(user);
-            // req.cookies.token = token
-            // res.json({ token });
+            
             return done(null, user);
         } catch (error) {
             return done(error); // Devuelve el error a Passport
@@ -112,13 +107,10 @@ passport.use("github",
                 
                 const userDB = await Users.findByEmail(profile.emails[0].value);
                 // login
-
                 if (userDB) {
                     return done(null, userDB);
                     } 
-
                 const cart = await Cart.createOne();
-
                 // signup
                 const infoUser = {
                     name: profile._json.name.split(" ")[0], 

@@ -1,0 +1,20 @@
+<header>
+    <h1>
+        PELIMANIA "LA RIPOLL"
+    </h1>
+</header>
+
+
+<div class="product-card">
+    <h4>TITLE: {{product._doc.title}}</h4>
+    <p>DESCRIPTION: {{product._doc.description}}</p>
+    <p>PRICE: ${{product._doc.price}}</p>
+    <p>STOCK: {{product._doc.stock}}</p>
+    <p>CATEGORY: {{product._doc.category}}</p>
+    <img src="{{product._doc.thumbail}}" alt="{{product._doc.title}}">      
+    <button class="boton" id="add-to-cart-btn" data-product-id="{{product._doc._id}}" onclick="addToCart('{{cartId}}', '{{product._doc._id}}')">Add to Cart</button>
+    <button class="boton"><a href="/api/views/home">VOLVER</a></button>
+    
+</div>
+
+<script src="/functions.js"></script>

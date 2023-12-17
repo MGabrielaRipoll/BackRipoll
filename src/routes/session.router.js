@@ -114,6 +114,8 @@ router.post("/signup",(req, res, next)=>{ passport.authenticate("signup", {
             };
             // Generar el token JWT
             const token = generateToken(payload);
+            const carritoUser = user.cartId;
+            res.cookie('cartId', carritoUser, { maxAge: 60000, httpOnly: true });
             res.cookie('token', token, { maxAge: 60000, httpOnly: true });
             return res.redirect('/api/views/home');
         })(req, res, next);
@@ -169,6 +171,8 @@ router.get("/callback", passport.authenticate("github"), (req, res) => {
     // Generar el token JWT
     const token = generateToken(payload);
     res.cookie('token', token, { maxAge: 60000, httpOnly: true });
+    const carritoUser = req.user.cartId;
+    res.cookie('cartId', carritoUser, { maxAge: 60000, httpOnly: true });
     res.redirect("/api/views/home");
 });
 
@@ -193,7 +197,8 @@ router.get(
         // Generar el token JWT
         const token = generateToken(payload);
         res.cookie('token', token, { maxAge: 60000, httpOnly: true });
-
+        const carritoUser = req.user.cartId;
+        res.cookie('cartId', carritoUser, { maxAge: 60000, httpOnly: true });
         res.redirect("/api/views/home");
     }
 );

@@ -6,7 +6,6 @@ import passport from "passport";
 
 export const findUserById = (req, res) => {
     passport.authenticate("jwt", { session: false }),
-    authMiddleware(["USER"]),
     async (req, res) => {
         const { idUser } = req.params;
         const user = await findById(idUser);

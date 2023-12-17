@@ -5,6 +5,8 @@ import { Cart } from '../daos/MongoDB/cartsManager.mongo.js'
 import { Users } from '../daos/MongoDB/usersManager.mongo.js'
 import { Cookie } from "express-session";
 import passport from "passport";
+import cookieParser from 'cookie-parser';
+
 
 // import { paginate } from "mongoose-paginate-v2";
 
@@ -12,11 +14,10 @@ import passport from "passport";
 const router = Router();
 
 router.get("/home", passport.authenticate('current', { session: false }), async (req, res) => {
-    console.log("cookie", req.cookies.token);
     if (!req.cookies.token) {
         return res.redirect("/api/views/login");
     }
-    console.log(req.user);
+    // console.log(req.user);
     try {
         const products = await Manager.findAll(req.query);
         const productsFinal = products.info.results;
@@ -24,7 +25,8 @@ router.get("/home", passport.authenticate('current', { session: false }), async 
         const result = clonedProducts;
         const paginate = products.info.pages;
         const sort = req.query.orders;
-        res.render("home",  { cartId: req.user.cartId, user: req.user, name: req.user.name, email : req.user.email, products: result, paginate: paginate, sort: sort, style: "product" } );
+        const cart = Cart.findById(req.user.cartId)
+        res.render("home",  { cartId: req.user.cartId, quantity: cart.totalProducts, user: req.user, name: req.user.name, email : req.user.email, products: result, paginate: paginate, sort: sort, style: "product" } );
     } catch (error) {
         console.error(error);
         res.status(500).send("Error interno del servidor");
@@ -80,20 +82,52 @@ router.get("/error", (req, res) => {
 
 router.get('/carts/:cid', async (req, res) => {
     const { cid } = req.params;
-    
     try {
         const cart = await Cart.findById(cid);
-
         if (!cart) {
             return res.status(404).send('Carrito no encontrado');
         }
         const cartProducts = cart.products.map(doc => doc.toObject());
-
-        
-        console.log(cartProducts);
+        // console.log(cartProducts);
         res.render('carts', { cid : cid, products:cartProducts, style:"product" });
     } catch (error) {
         console.error(error);
+        res.status(500).send('Error interno del servidor');
+    }
+});
+
+// router.get("/products/:pid", async (req,res) => {
+//     try {
+//         const { pid } = req.params
+//         console.log(pid);
+//         // const cartId = req.session.user.cartId
+//         // console.log(cartId);
+//         const productFound = await Manager.findById(pid)
+//         console.log(productFound);
+//         if (!productFound) {
+//             return res.status(404).send('Producto no encontrado');
+//         }
+        
+//         res.render("productDetail", { pid: pid, product : productFound, style:"product"})
+//     } catch (error) {
+//         res.status(500).send('Error interno del servidor')
+//     }
+// })
+
+router.get("/products/:pid", async (req, res) => {
+    try {
+        const { pid } = req.params;
+        console.log( "cookis", req.cookies);
+        const cartId = req.cookies.cartId;
+        console.log("cartId", cartId);
+        const productFound = await Manager.findById(pid);
+        if (!productFound) {
+            return res.status(404).send('Producto no encontrado');
+        }
+        // Clone the object before passing it to Handlebars
+        const clonedProduct = Object.assign({}, productFound);
+        res.render("productDetail", {cartId: cartId,  pid: pid, product: clonedProduct, style: "product" });
+    } catch (error) {
         res.status(500).send('Error interno del servidor');
     }
 });

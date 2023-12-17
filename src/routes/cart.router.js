@@ -9,7 +9,7 @@ router.get("/", findAllCart)
 router.post("/", createOneCart)
 router.get("/:cid", findCartById)
 router.put("/:cid/products/:pid", updateCartQuantity)
-router.put("/:cid/products/:pid",addProductCart)
+router.post("/:cid/products/:pid",addProductCart)
 router.delete("/:cid/products/:pid",deleteOneProdCart)
 router.delete("/:cid", deleteOneCartAll)
 
