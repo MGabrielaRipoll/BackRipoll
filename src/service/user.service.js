@@ -1,5 +1,7 @@
 import { Users } from "../daos/MongoDB/usersManager.mongo.js";
 import { hashData } from "../utils.js";
+import UsersResponse from "../dtos/users-response.dto.js";
+
 
 
 

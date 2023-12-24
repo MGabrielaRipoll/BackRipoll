@@ -13,7 +13,9 @@
     <p>CATEGORY: {{product._doc.category}}</p>
     <img src="{{product._doc.thumbail}}" alt="{{product._doc.title}}">      
     <button class="boton" id="add-to-cart-btn" data-product-id="{{product._doc._id}}" onclick="addToCart('{{cartId}}', '{{product._doc._id}}')">Add to Cart</button>
+    <input type="hidden" id="pid" value="{{ product._doc._id }}">
     <button class="boton"><a href="/api/views/home">VOLVER</a></button>
+
     
 </div>
 

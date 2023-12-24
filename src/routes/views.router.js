@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { authMiddleware } from '../middlewares/auth.middlewares.js';
+
 // import {Manager} from '../dao/fileSystem/ProductManager.js'
 import { Manager } from '../daos/MongoDB/productManager.mongo.js'
 import { Cart } from '../daos/MongoDB/cartsManager.mongo.js'
@@ -25,7 +27,7 @@ router.get("/home", passport.authenticate('current', { session: false }), async 
         const result = clonedProducts;
         const paginate = products.info.pages;
         const sort = req.query.orders;
-        const cart = Cart.findById(req.user.cartId)
+        const cart = Cart.findCById(req.user.cartId)
         res.render("home",  { cartId: req.user.cartId, quantity: cart.totalProducts, user: req.user, name: req.user.name, email : req.user.email, products: result, paginate: paginate, sort: sort, style: "product" } );
     } catch (error) {
         console.error(error);
@@ -83,7 +85,7 @@ router.get("/error", (req, res) => {
 router.get('/carts/:cid', async (req, res) => {
     const { cid } = req.params;
     try {
-        const cart = await Cart.findById(cid);
+        const cart = await Cart.findCById(cid);
         if (!cart) {
             return res.status(404).send('Carrito no encontrado');
         }
@@ -144,7 +146,7 @@ router.get("/changeproducts", async (req, res) => {
 
 
 
-router.get("/realTimeProducts", async (req, res) => {
+router.get("/realTimeProducts", authMiddleware(["admin"]), async (req, res) => {
     try {
         const products = await Manager.findAll({});
         res.render("realTimeProducts", { products:products, style: "product"});

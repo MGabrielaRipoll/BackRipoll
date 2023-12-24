@@ -23,4 +23,11 @@ export const generateToken = (user) => {
     return token;
 };
 
-
+export const generateUniqueCode = () => {
+    const prefix = 'ORDER'; // Puedes personalizar esto según tus necesidades
+    const timestamp = Date.now().toString(36); // Convertir la fecha actual a base36
+    const random = Math.random().toString(36).substr(2, 5); // Número aleatorio en base36
+    // Concatenar los elementos para formar el código único
+    const uniqueCode = `${prefix}-${timestamp}-${random}`;
+    return uniqueCode.toUpperCase(); // Convertir todo a mayúsculas si es necesario
+}

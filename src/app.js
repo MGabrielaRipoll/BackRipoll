@@ -19,6 +19,7 @@ import "./passport.js";
 import passport from "passport";
 import fileStore from "session-file-store";
 import  config  from "../src/config/config.js";
+import { authMiddleware } from './middlewares/auth.middlewares.js';
 const FileStore = fileStore(session);
 
 // const PORT = config.port;
@@ -40,6 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser("SecretCookie"));
 app.use('/public', express.static('public'));
 app.use(express.static(__dirname + "/public"));
+// app.use(authMiddleware);
 
 
 
@@ -51,7 +53,6 @@ app.use(cookieParser());
 app.engine("handlebars", engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
-
 app.use('/api/products', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/views', viewsRouter);

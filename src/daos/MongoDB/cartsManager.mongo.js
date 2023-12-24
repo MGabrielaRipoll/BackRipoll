@@ -1,4 +1,5 @@
 import { cartsModel } from "../../DB/Models/carts.models.js";
+import { productsModel } from "../../DB/Models/products.models.js";
 import { Manager } from "../../daos/MongoDB/productManager.mongo.js";
 
 class CartsManager {
@@ -8,13 +9,13 @@ class CartsManager {
     }
     
 
-    async findById(id) {
+    async findCById(id) {
         const result = await cartsModel.findById(id)
         .populate({
-            path: "products.product",
-            model: "Products", 
-            select: ["title", "description", "price", "stock", "code", "category", "status", "thumbail"]
-        });
+        path: 'products.product',  // Populate the 'product' field in the 'products' array                 
+        model: productsModel,      // Reference the 'Products' model
+        })
+        console.log("result",result);
         return result;
     }
 

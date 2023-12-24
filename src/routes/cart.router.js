@@ -1,16 +1,17 @@
-
+import { authMiddleware } from '../middlewares/auth.middlewares.js';
 import { Router } from 'express';
-import { findCartById, findAllCart, addProductCart, createOneCart, deleteOneProdCart, deleteOneCartAll, updateCartQuantity } from '../controllers/cart.controller.js';
+import { findCartById, findAllCart, addProductCart, createOneCart, cartBuy, deleteOneProdCart, deleteOneCartAll, updateCartQuantity } from '../controllers/cart.controller.js';
 
 
 const router = Router();
 
 router.get("/", findAllCart)
-router.post("/", createOneCart)
+router.post("/",authMiddleware(["user"]),  createOneCart)
 router.get("/:cid", findCartById)
-router.put("/:cid/products/:pid", updateCartQuantity)
-router.post("/:cid/products/:pid",addProductCart)
-router.delete("/:cid/products/:pid",deleteOneProdCart)
-router.delete("/:cid", deleteOneCartAll)
+router.get("/:cid/purchase", cartBuy)
+router.put("/:cid/products/:pid",authMiddleware(["user"]),  updateCartQuantity)
+router.post("/:cid/products/:pid",authMiddleware(["user"]), addProductCart)
+router.delete("/:cid/products/:pid",authMiddleware(["user"]), deleteOneProdCart)
+router.delete("/:cid",authMiddleware(["user"]),  deleteOneCartAll)
 
 export default router;

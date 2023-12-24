@@ -6,6 +6,8 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GithubStrategy } from "passport-github2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { hashData, compareData } from "./utils.js";
+import UsersResponse from "./dtos/users-response.dto.js";
+
 import config from "../src/config/config.js";
 // local
 
@@ -173,11 +175,13 @@ passport.use('current', new JWTStrategy({
     try {
         console.log(jwt_payload);
         const user = await Users.findByEmail(jwt_payload.mail);
+
         console.log(user);
         if (!user) {
             return done(null, false, { message: 'Usuario no encontrado' });
         }
-        return done(null, user);}
+        const userDTO =  new UsersResponse(user)
+        return done(null, userDTO);}
             catch (error) {
                 return error
             }

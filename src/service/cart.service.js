@@ -6,8 +6,8 @@ export const findAll = () => {
     return carts;
 };
 
-export const findById = (id) => {
-    const cart = Cart.findById(id);
+export const findCById = (id) => {
+    const cart = Cart.findCById(id);
     return cart;
 };
 
