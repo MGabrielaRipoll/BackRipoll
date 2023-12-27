@@ -1,13 +1,18 @@
 import { findAll, findCById, createOne, addProduct, deleteOneProduct, deleteAll, updateCart } from "../service/cart.service.js";
 import { findById } from "../service/product.service.js";
-import { Cart } from "../daos/MongoDB/cartsManager.mongo.js";
+import { Cart } from "../DAL/daos/MongoDB/cartsManager.mongo.js";
 import { createOneTicket } from "../controllers/ticket.controller.js";
 import { generateUniqueCode } from "../utils.js";
+import jwt from "jsonwebtoken";
+import config from "../config/config.js" 
+
+
 
 export const findCartById = async (req, res) => {
     const { cid } = req.params;
     try {
         const cart = await findCById(cid);
+        ;
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
         }
@@ -47,7 +52,7 @@ export const addProductCart = async (req, res) => {
     try {
         const productAdd = await findById(pid);
         const cartNow = await findCById(cid);
-        if (productAdd.stock >= cartNow.products.quantity) {
+        if (productAdd.stock) {
             const response = await addProduct(cid,pid);
             res.status(200).json({ message: "Product added to cart", cart: response })}
             else {
@@ -125,12 +130,12 @@ export const updateCartQuantity = async (req, res) => {
 export const cartBuy = async (req,res) => {
     try {
         const { cid } = req.params;
-        console.log(cid);
-        
-        const cart = await Cart.findCById(cid).populate();
-        console.log(cart);
+        console.log("cid ticket", cid);
+        const secretKeyJwt = config.secret_jwt;        
+        const cart = await Cart.findCById(cid).populate("products.product");   
+        console.log("cart ticket",cart);
         const products = cart.products;
-        console.log(products);
+        console.log("product ticket",products);
         let availableProducts = [];
         let unavailableProducts = [];
         let totalAmount = 0;
@@ -150,6 +155,12 @@ export const cartBuy = async (req,res) => {
         console.log("disponible", availableProducts, "nodisp", unavailableProducts);
         cart.products = unavailableProducts;
         await cart.save();
+        const token = req.cookies.token;
+        console.log(token);
+        const userToken = jwt.verify(token, secretKeyJwt);
+        console.log(userToken);
+        req.user = userToken;
+        // console.log("userCart", req.cookies);
         if (availableProducts.length) {
             const ticket = {
                 code: generateUniqueCode(),

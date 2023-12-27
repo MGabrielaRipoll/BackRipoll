@@ -1,4 +1,4 @@
-import { ticketModel  } from "../../DB/Models/ticket.models.js";
+import { ticketModel  } from "../../../DB/Models/ticket.models.js";
 
 
 class TicketManager {

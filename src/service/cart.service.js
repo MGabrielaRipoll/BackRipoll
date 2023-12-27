@@ -1,4 +1,4 @@
-import { Cart } from "../daos/MongoDB/cartsManager.mongo.js"
+import { Cart } from "../DAL/daos/MongoDB/cartsManager.mongo.js"
 
 
 export const findAll = () => {
@@ -7,7 +7,7 @@ export const findAll = () => {
 };
 
 export const findCById = (id) => {
-    const cart = Cart.findCById(id);
+    const cart = Cart.findCById(id)        
     return cart;
 };
 

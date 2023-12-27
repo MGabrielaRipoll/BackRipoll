@@ -1,6 +1,6 @@
-import { Users } from "../daos/MongoDB/usersManager.mongo.js";
+import { Users } from "..//DALdaos/MongoDB/usersManager.mongo.js";
 import { hashData } from "../utils.js";
-import UsersResponse from "../dtos/users-response.dto.js";
+import UsersResponse from "../DAL/dtos/users-response.dto.js";
 
 
 

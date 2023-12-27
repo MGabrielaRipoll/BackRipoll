@@ -1,4 +1,4 @@
-import { Ticket } from "../daos/MongoDB/ticketManager.mongo.js";
+import { Ticket } from "../DAL/daos/MongoDB/ticketManager.mongo.js";
 
 
 

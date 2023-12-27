@@ -1,4 +1,4 @@
-import { Manager } from "../daos/MongoDB/productManager.mongo.js"
+import { Manager } from "../DAL/daos/MongoDB/productManager.mongo.js"
 
 
 export const findAll = () => {

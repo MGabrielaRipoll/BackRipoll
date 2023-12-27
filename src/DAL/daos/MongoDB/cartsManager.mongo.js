@@ -1,6 +1,6 @@
-import { cartsModel } from "../../DB/Models/carts.models.js";
-import { productsModel } from "../../DB/Models/products.models.js";
-import { Manager } from "../../daos/MongoDB/productManager.mongo.js";
+import { cartsModel } from "../../../DB/Models/carts.models.js";
+import { productsModel } from "../../../DB/Models/products.models.js";
+import { Manager } from "../MongoDB/productManager.mongo.js";
 
 class CartsManager {
     async findAll() {
@@ -10,11 +10,8 @@ class CartsManager {
     
 
     async findCById(id) {
-        const result = await cartsModel.findById(id)
-        .populate({
-        path: 'products.product',  // Populate the 'product' field in the 'products' array                 
-        model: productsModel,      // Reference the 'Products' model
-        })
+        const result = await cartsModel.findById(id)    
+        .populate('products.product');
         console.log("result",result);
         return result;
     }

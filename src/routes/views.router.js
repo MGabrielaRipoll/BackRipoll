@@ -2,9 +2,9 @@ import { Router } from "express";
 import { authMiddleware } from '../middlewares/auth.middlewares.js';
 
 // import {Manager} from '../dao/fileSystem/ProductManager.js'
-import { Manager } from '../daos/MongoDB/productManager.mongo.js'
-import { Cart } from '../daos/MongoDB/cartsManager.mongo.js'
-import { Users } from '../daos/MongoDB/usersManager.mongo.js'
+import { Manager } from '../DAL/daos/MongoDB/productManager.mongo.js'
+import { Cart } from '../DAL/daos/MongoDB/cartsManager.mongo.js'
+import { Users } from '../DAL/daos/MongoDB/usersManager.mongo.js'
 import { Cookie } from "express-session";
 import passport from "passport";
 import cookieParser from 'cookie-parser';
@@ -27,7 +27,7 @@ router.get("/home", passport.authenticate('current', { session: false }), async 
         const result = clonedProducts;
         const paginate = products.info.pages;
         const sort = req.query.orders;
-        const cart = Cart.findCById(req.user.cartId)
+        const cart = await Cart.findCById(req.user.cartId)
         res.render("home",  { cartId: req.user.cartId, quantity: cart.totalProducts, user: req.user, name: req.user.name, email : req.user.email, products: result, paginate: paginate, sort: sort, style: "product" } );
     } catch (error) {
         console.error(error);
@@ -82,21 +82,33 @@ router.get("/error", (req, res) => {
 });
 
 
-router.get('/carts/:cid', async (req, res) => {
-    const { cid } = req.params;
+router.get('/carts/:cartId', async (req, res) => {
+    const { cartId } = req.params;
+    
     try {
-        const cart = await Cart.findCById(cid);
+        const cart = await Cart.findCById(cartId);
         if (!cart) {
             return res.status(404).send('Carrito no encontrado');
         }
+        // console.log("cart1",cart);
         const cartProducts = cart.products.map(doc => doc.toObject());
-        // console.log(cartProducts);
-        res.render('carts', { cid : cid, products:cartProducts, style:"product" });
+        // console.log( "cart2", cartProducts.totalProducts);
+        // console.log("cartid del carrito...", cartId);
+        res.render('carts', {  cartId : cartId, products:cartProducts, style:"product" });
     } catch (error) {
         console.error(error);
         res.status(500).send('Error interno del servidor');
     }
 });
+router.get('/carts/:cartId/purchase', async (req, res) => {
+    try {
+        const {cartId} = req.params;
+        console.log("cartTickeeloco", cartId);
+        const cart = await Cart.findCById(cartId);
+        res.render ('ticket', {cart: cart, cartId : cartId});
+    } catch (error) {
+        res.status(500).send('Error interno del servidor');
+    }});
 
 // router.get("/products/:pid", async (req,res) => {
 //     try {
@@ -123,12 +135,13 @@ router.get("/products/:pid", async (req, res) => {
         const cartId = req.cookies.cartId;
         console.log("cartId", cartId);
         const productFound = await Manager.findById(pid);
+        const cart = await Cart.findCById(cartId);
         if (!productFound) {
             return res.status(404).send('Producto no encontrado');
         }
         // Clone the object before passing it to Handlebars
         const clonedProduct = Object.assign({}, productFound);
-        res.render("productDetail", {cartId: cartId,  pid: pid, product: clonedProduct, style: "product" });
+        res.render("productDetail", {cartId: cartId, quantity: cart.totalProducts,  pid: pid, product: clonedProduct, style: "product" });
     } catch (error) {
         res.status(500).send('Error interno del servidor');
     }
@@ -149,11 +162,20 @@ router.get("/changeproducts", async (req, res) => {
 router.get("/realTimeProducts", authMiddleware(["admin"]), async (req, res) => {
     try {
         const products = await Manager.findAll({});
-        res.render("realTimeProducts", { products:products, style: "product"});
-    } catch {
-        error
+        // const clonedProduct = products.docs.map(item => Object.assign({}, item));
+        // const template = handlebars.compile(yourTemplate);
+        // const result = template(clonedProduct);
+        const clonedProduct = products.docs.map(doc => doc.toObject());
+
+        console.log(clonedProduct);
+
+        res.render("realTimeProducts", { products: clonedProduct, style: "product" });
+    } catch (error) {
+        console.error("Error en la ruta /realTimeProducts:", error);
+        res.status(500).send("Internal Server Error");
     }
 });
+
 router.get("/chat", async (req, res) => {
     try {
         // const products = await Manager.getProductList();

@@ -1,4 +1,4 @@
-import { productsModel } from "../../DB/Models/products.models.js";
+import { productsModel } from "../../../DB/Models/products.models.js";
 
 
 

@@ -8,12 +8,12 @@ import cookieRouter from './routes/cookie.router.js'
 import { __dirname } from "./utils.js";
 import { Server } from "socket.io";
 import { engine } from "express-handlebars";
-import { Manager } from './daos/MongoDB/productManager.mongo.js'
+import { Manager } from './DAL/daos/MongoDB/productManager.mongo.js'
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
 // import { Manager } from './dao/fileSystem/ProductManager.js';
-import { messagesManager } from "./daos/MongoDB/messaggeManager.mongo.js";
+import { messagesManager } from "./DAL/daos/MongoDB/messaggeManager.mongo.js";
 import "./DB/configDB.js";
 import "./passport.js";
 import passport from "passport";

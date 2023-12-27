@@ -1,4 +1,4 @@
-import { messaggeModel } from "../../DB/Models/messagge.models.js";
+import { messaggeModel } from "../../../DB/Models/messagge.models.js";
 
 class MessagesManager {
     async findAll() {
