@@ -14,7 +14,7 @@ export const findByEmail = (id) => {
     return ticket;
 };
 
-export const createOne = (obj) => {
-    const createdTicket = Ticket.createOne(newObj);
+export const createOneT = (obj) => {
+    const createdTicket = Ticket.createOne(obj);
     return createdTicket;
 };

@@ -1,7 +1,7 @@
 import { findAll, findCById, createOne, addProduct, deleteOneProduct, deleteAll, updateCart } from "../service/cart.service.js";
 import { findById } from "../service/product.service.js";
 import { Cart } from "../DAL/daos/MongoDB/cartsManager.mongo.js";
-import { createOneTicket } from "../controllers/ticket.controller.js";
+import { createOneT } from "../service/ticket.service.js";
 import { generateUniqueCode } from "../utils.js";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js" 
@@ -132,7 +132,7 @@ export const cartBuy = async (req,res) => {
         const { cid } = req.params;
         console.log("cid ticket", cid);
         const secretKeyJwt = config.secret_jwt;        
-        const cart = await Cart.findCById(cid).populate("products.product");   
+        const cart = await Cart.findCById(cid);  
         console.log("cart ticket",cart);
         const products = cart.products;
         console.log("product ticket",products);
@@ -155,22 +155,24 @@ export const cartBuy = async (req,res) => {
         console.log("disponible", availableProducts, "nodisp", unavailableProducts);
         cart.products = unavailableProducts;
         await cart.save();
-        const token = req.cookies.token;
-        console.log(token);
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTZlMWFjMjU1YzY4OTdjODNmNDdjZDMiLCJuYW1lIjoiR2FicmllbGEiLCJtYWlsIjoiZ2FieW1hdWp3QGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzAzNzIxMDkwLCJleHAiOjE3MDM3MjQ2OTB9.lKMgvK37iteA4BTGSKa3EXJyBB2ekxqOb7wtEeD7Kho";
+        console.log("token ticket",token);
         const userToken = jwt.verify(token, secretKeyJwt);
-        console.log(userToken);
-        req.user = userToken;
+        console.log("userticket", userToken);
+        // req.user = userToken;
         // console.log("userCart", req.cookies);
         if (availableProducts.length) {
             const ticket = {
                 code: generateUniqueCode(),
                 purchase_datetime: new Date(),
                 amount: totalAmount,
-                purchaser: req.user.email,
+                purchaser: userToken.mail,
             };
+
             console.log("ticket", ticket);
-            await createOneTicket(ticket);
-            return { availableProducts, totalAmount };
+            const ticketFinal = await createOneT(ticket);
+            // location.reload(true);
+            return { availableProducts, totalAmount, ticketFinal };
         }
         return { unavailableProducts };
     } catch (error) {
