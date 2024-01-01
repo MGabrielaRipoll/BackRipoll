@@ -36,20 +36,24 @@
             <p>PRICE: ${{price}}</p>
             <img src="{{thumbail}}" alt="{{title}}">      
             <button class="boton"><a href="/api/views/products/{{_id}}">VER MAS</a></button>
-            {{!-- <button class="boton" id="add-to-cart-btn" data-product-id="{{_id}}" onclick="addToCart('{{cartId}}', '{{_id}}')">Add to Cart</button> --}}
-            {{!-- <button onclick="addToCart(document.getElementById('cartId').value, document.getElementById('_id').value)">Add to Cart</button> --}}
-            <!-- Assuming you have input elements with IDs cartId and _id -->   
-            {{!-- <input type="hidden" id="cartId" value="{{ cartId }}">
-            <input type="hidden" id="_id" value="{{ _id }}"> --}}
+
         </div>
         {{/each}}
     </div>
 
-
-    <div class="pagination">
+    <div id="pagination">
+        {{#if prevPage}}      
+                <button class="boton"><a id="pagination_button" href="/home/?limit={{limit}}&page={{prevPage}}">Prev Page</a></button>
+        {{/if}}    
+        <p id="pagination_number">Page {{pages}}</p>
+        {{#if nextPage}}
+                <button class="boton"><a id="pagination_button" href="/home/?limit={{limit}}&page={{nextPage}}">Next Page</a></button>
+        {{/if}}    
+    </div>
+    {{!-- <div class="pagination">
         <button class="boton" id="prev-page" {{#if prevPage}}data-page="{{prevPage}}"{{/if}}>Previous Page</button>
         <button class="boton" id="next-page" {{#if nextPage}}data-page="{{nextPage}}"{{/if}}>Next Page</button>
-    </div>
+    </div> --}}
 {{else}}
     <p>No products available.</p>
 {{/if}} 

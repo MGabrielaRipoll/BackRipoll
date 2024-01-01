@@ -8,6 +8,7 @@ import { Users } from '../DAL/daos/MongoDB/usersManager.mongo.js'
 import { Cookie } from "express-session";
 import passport from "passport";
 import cookieParser from 'cookie-parser';
+import { generateProduct } from "../faker.js";
 
 
 // import { paginate } from "mongoose-paginate-v2";
@@ -22,15 +23,18 @@ router.get("/home", passport.authenticate('current', { session: false }), async 
     // console.log(req.user);
     try {
         const products = await Manager.findAll(req.query);
+        const { limit  } = req.params;
         const productsFinal = products.info.results;
+        // console.log("productos... ",products.info);
         const clonedProducts = productsFinal.map(product => Object.assign({}, product._doc));
         const result = clonedProducts;
-        const paginate = products.info.pages;
+        const {pages, nextPage, prevPage}  = products.info;
         const sort = req.query.orders;
         const cart = await Cart.findCById(req.user.cartId)
-        res.render("home",  { cartId: req.user.cartId, quantity: cart.totalProducts, user: req.user, name: req.user.name, email : req.user.email, products: result, paginate: paginate, sort: sort, style: "product" } );
+
+        res.render("home",  { cartId: req.user.cartId, quantity: cart.totalProducts, user: req.user, name: req.user.name, email : req.user.email, products: result, sort: sort, pages : pages, limit:limit, nextPage: nextPage,  prevPage: prevPage, style: "product" } );
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         res.status(500).send("Error interno del servidor");
     }
 });
@@ -56,7 +60,7 @@ router.get("/home", passport.authenticate('current', { session: false }), async 
 // });
 
 router.get("/login", (req, res) => {
-    console.log("cookies", req.cookies.token);
+    // console.log("cookies", req.cookies.token);
         if (req.cookies.token) {    
             return res.redirect("/home", { style:"product" });
         }
@@ -96,14 +100,14 @@ router.get('/carts/:cartId', async (req, res) => {
         // console.log("cartid del carrito...", cartId);
         res.render('carts', {  cartId : cartId, products:cartProducts, style:"product" });
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         res.status(500).send('Error interno del servidor');
     }
 });
 router.get('/carts/:cartId/purchase', async (req, res) => {
     try {
         const {cartId} = req.params;
-        console.log("cartTickeeloco", cartId);
+        // console.log("cartTickeeloco", cartId);
         const cart = await Cart.findCById(cartId);
         res.render ('ticket', {cart: cart, cartId : cartId});
     } catch (error) {
@@ -131,9 +135,9 @@ router.get('/carts/:cartId/purchase', async (req, res) => {
 router.get("/products/:pid", async (req, res) => {
     try {
         const { pid } = req.params;
-        console.log( "cookis", req.cookies);
+        // console.log( "cookis", req.cookies);
         const cartId = req.cookies.cartId;
-        console.log("cartId", cartId);
+        // console.log("cartId", cartId);
         const productFound = await Manager.findById(pid);
         const cart = await Cart.findCById(cartId);
         if (!productFound) {
@@ -167,11 +171,11 @@ router.get("/realTimeProducts", authMiddleware(["admin"]), async (req, res) => {
         // const result = template(clonedProduct);
         const clonedProduct = products.docs.map(doc => doc.toObject());
 
-        console.log(clonedProduct);
+        // console.log(clonedProduct);
 
         res.render("realTimeProducts", { products: clonedProduct, style: "product" });
     } catch (error) {
-        console.error("Error en la ruta /realTimeProducts:", error);
+        // console.error("Error en la ruta /realTimeProducts:", error);
         res.status(500).send("Internal Server Error");
     }
 });
@@ -184,5 +188,12 @@ router.get("/chat", async (req, res) => {
         error
     }
 });
-
+router.get("/mockingProducts", (req, res) => {
+    const products = [];
+    for (let i = 0; i < 100; i++) {
+        const product = generateProduct();
+        products.push(product);
+    }
+    res.render("mockingProducts", {products:products,style:"product"});
+});
 export default router;

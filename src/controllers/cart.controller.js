@@ -5,6 +5,8 @@ import { createOneT } from "../service/ticket.service.js";
 import { generateUniqueCode } from "../utils.js";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js" 
+import CustomError from "../errors/error.generate.js";
+import { ErrorMessages, ErrorName } from "../errors/errors.enum.js";
 
 
 
@@ -14,11 +16,12 @@ export const findCartById = async (req, res) => {
         const cart = await findCById(cid);
         ;
         if (!cart) {
-            return res.status(404).json({ message: "Cart not found" });
+            // return res.status(404).json({ message: "Cart not found" });
+            return CustomError.generateError(ErrorMessages.CART_NOT_FOUND,404,ErrorName.CART_NOT_FOUND);
         }
         res.status(200).json({ message: "Cart found", cart });
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -31,7 +34,7 @@ export const findAllCart = async (req, res) => {
         }
         res.status(200).json({ message: "Carts found", carts });
     } catch (error) {
-        console.error(error); // Log the error for debugging
+        // console.error(error); // Log the error for debugging
         res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -41,14 +44,14 @@ export const createOneCart = async (req, res) => {
         const cart = await createOne();
         res.status(201).json({ message: "Cart created", cart });
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
 
 export const addProductCart = async (req, res) => {
     const { cid , pid } = req.params;
-    console.log( "cid", cid, "pid", pid);
+    // console.log( "cid", cid, "pid", pid);
     try {
         const productAdd = await findById(pid);
         const cartNow = await findCById(cid);
@@ -59,7 +62,7 @@ export const addProductCart = async (req, res) => {
                 res.status(404).json({ message: "Stock insuficiente" });
             };
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -90,7 +93,7 @@ export const updateCartQuantity = async (req, res) => {
     const { cid } = req.params;
     try {
         const response = await Cart.update(cid , pid , quantity);
-        console.log(response);
+        // console.log(response);
         res.status(200).json({ message: "cart update", cart: response });
     } catch (error){
         res.status(500).json({ message: "Internal server error" });
@@ -177,5 +180,5 @@ export const cartBuy = async (req,res) => {
         return { unavailableProducts };
     } catch (error) {
         
-        // res.status(500).json({ error: 'Error interno del servidor' }); 
+        res.status(500).json({ error: 'Error interno del servidor' }); 
     }};

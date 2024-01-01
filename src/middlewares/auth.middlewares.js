@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
 import config from "../config/config.js" 
+import CustomError from "../errors/error.generate.js";
+import { ErrorMessages, ErrorName } from "../errors/errors.enum.js";
 
 
 const secretKeyJwt = config.secret_jwt;
@@ -16,7 +18,8 @@ export const authMiddleware = (roles) => {
             return next();
         }
         if (!roles.includes(req.user.role)) {
-            return res.status(403).json("Not authorized");
+            // return res.status(403).json("Not authorized");
+            return CustomError.generateError(ErrorMessages.USER_NOT_AUTORIZED,403,ErrorName.USER_NOT_AUTORIZED);
         }
         next();
     };

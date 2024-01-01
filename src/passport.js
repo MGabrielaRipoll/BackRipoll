@@ -12,7 +12,7 @@ import config from "../src/config/config.js";
 // local
 
 const secretKeyJwt = config.secret_jwt;
-console.log(config.secret_jwt);
+// console.log(config.secret_jwt);
 passport.use("signup", new LocalStrategy(
         { passReqToCallback: true, usernameField: "email" },
         async (req, email, password, done) => {
@@ -85,7 +85,7 @@ passport.use("login", new LocalStrategy(
             if (!isPasswordValid) {
                 return done(null, false, { message: "Invalid password" });
             }
-            console.log("user passport", user);
+            // console.log("user passport", user);
             
             return done(null, user);
         } catch (error) {
@@ -121,7 +121,7 @@ passport.use("github",
                     password: " ",
                     cartId: cart._id,
                 };
-                console.log(infoUser);
+                // console.log(infoUser);
                 const createdUser = await Users.createOne(infoUser);
                 done(null, createdUser);
                 } catch (error) {
@@ -173,10 +173,10 @@ passport.use('current', new JWTStrategy({
     secretOrKey: secretKeyJwt,
 }, async (jwt_payload, done) => {
     try {
-        console.log(jwt_payload);
+        // console.log(jwt_payload);
         const user = await Users.findByEmail(jwt_payload.mail);
 
-        console.log(user);
+        // console.log(user);
         if (!user) {
             return done(null, false, { message: 'Usuario no encontrado' });
         }
@@ -196,7 +196,7 @@ passport.use(
         secretOrKey: secretKeyJwt,
     },
     async function (jwt_payload, done) {
-        console.log(jwt_payload);
+        // console.log(jwt_payload);
         done(null, jwt_payload);
     }
     )

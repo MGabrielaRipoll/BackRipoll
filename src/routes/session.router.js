@@ -99,7 +99,7 @@ router.post("/signup",(req, res, next)=>{ passport.authenticate("signup", {
 //     });
     router.post('/login', (req, res, next) => {
         passport.authenticate("login", (err, user) => {
-            console.log("user", user, req.user, req.cookies.token);
+            // console.log("user", user, req.user, req.cookies.token);
             if (err) {
                 return next(err);
             }
@@ -161,7 +161,7 @@ router.get("/auth/github", passport.authenticate("github", {
 );
 
 router.get("/callback", passport.authenticate("github"), (req, res) => {
-    console.log(req.user);
+    // console.log(req.user);
     const payload = {
         sub: req.user._id, 
         name: req.user.name,
@@ -187,7 +187,7 @@ router.get(
     "/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/api/views/error" }),
     (req, res) => {
-        console.log(req.user);
+        // console.log(req.user);
         const payload = {
             sub: req.user._id, 
             name: req.user.name,

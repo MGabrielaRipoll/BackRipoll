@@ -4,6 +4,7 @@ import cartRouter from './routes/cart.router.js'
 import chatsRouter from './routes/chats.router.js'
 import sessionRouter from './routes/session.router.js'
 import viewsRouter from "./routes/views.router.js";
+import mockingRouter from "./routes/mockingproducts.router.js"
 import cookieRouter from './routes/cookie.router.js'
 import { __dirname } from "./utils.js";
 import { Server } from "socket.io";
@@ -20,6 +21,7 @@ import passport from "passport";
 import fileStore from "session-file-store";
 import  config  from "../src/config/config.js";
 import { authMiddleware } from './middlewares/auth.middlewares.js';
+import { errorMiddleware } from './middlewares/error.middlewares.js';
 const FileStore = fileStore(session);
 
 // const PORT = config.port;
@@ -54,12 +56,14 @@ app.engine("handlebars", engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 app.use('/api/products', productRouter);
+app.use('/api/mockingProducts', mockingRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/views', viewsRouter);
 app.use("/api/cookie", cookieRouter);
 app.use("/api/session", sessionRouter);
 app.use('/api/chat', chatsRouter);
 
+app.use(errorMiddleware);
 
 const httpServer = app.listen(8080, () => {
     console.log('Escuchando al puerto 8080');
