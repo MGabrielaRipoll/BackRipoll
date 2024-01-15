@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import config from "../config/config.js" 
 import CustomError from "../errors/error.generate.js";
 import { ErrorMessages, ErrorName } from "../errors/errors.enum.js";
+import {logger} from "../logger.js"
 
 
 
@@ -21,7 +22,7 @@ export const findCartById = async (req, res) => {
         }
         res.status(200).json({ message: "Cart found", cart });
     } catch (error) {
-        // console.error(error);
+        logger.error(error)
         res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -34,7 +35,7 @@ export const findAllCart = async (req, res) => {
         }
         res.status(200).json({ message: "Carts found", carts });
     } catch (error) {
-        // console.error(error); // Log the error for debugging
+        logger.error(error)
         res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -44,7 +45,7 @@ export const createOneCart = async (req, res) => {
         const cart = await createOne();
         res.status(201).json({ message: "Cart created", cart });
     } catch (error) {
-        // console.error(error);
+        logger.error(error)
         res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -62,7 +63,7 @@ export const addProductCart = async (req, res) => {
                 res.status(404).json({ message: "Stock insuficiente" });
             };
     } catch (error) {
-        // console.error(error);
+        logger.error(error)
         res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -84,6 +85,7 @@ export const deleteOneCartAll = async (req, res) => {
         const response = await deleteAll(cid);
         res.status(200).json({ message: "Cart delette", cart: response });   
     } catch (error){
+        logger.error(error)
         res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -96,6 +98,7 @@ export const updateCartQuantity = async (req, res) => {
         // console.log(response);
         res.status(200).json({ message: "cart update", cart: response });
     } catch (error){
+        logger.error(error)
         res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -155,13 +158,14 @@ export const cartBuy = async (req,res) => {
                 unavailableProducts.push(item);
             }
         }    
-        console.log("disponible", availableProducts, "nodisp", unavailableProducts);
+        logger.info("disponible", availableProducts, "nodisp", unavailableProducts);
         cart.products = unavailableProducts;
         await cart.save();
+        // const token = req.cookie.token;
         const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTZlMWFjMjU1YzY4OTdjODNmNDdjZDMiLCJuYW1lIjoiR2FicmllbGEiLCJtYWlsIjoiZ2FieW1hdWp3QGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzAzNzIxMDkwLCJleHAiOjE3MDM3MjQ2OTB9.lKMgvK37iteA4BTGSKa3EXJyBB2ekxqOb7wtEeD7Kho";
-        console.log("token ticket",token);
+        logger.info("token ticket",token);
         const userToken = jwt.verify(token, secretKeyJwt);
-        console.log("userticket", userToken);
+        logger.info("userticket", userToken);
         // req.user = userToken;
         // console.log("userCart", req.cookies);
         if (availableProducts.length) {
@@ -172,13 +176,13 @@ export const cartBuy = async (req,res) => {
                 purchaser: userToken.mail,
             };
 
-            console.log("ticket", ticket);
+            logger.info("ticket", ticket);
             const ticketFinal = await createOneT(ticket);
             // location.reload(true);
             return { availableProducts, totalAmount, ticketFinal };
         }
         return { unavailableProducts };
     } catch (error) {
-        
+        logger.error(error)
         res.status(500).json({ error: 'Error interno del servidor' }); 
     }};

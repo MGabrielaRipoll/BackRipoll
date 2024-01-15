@@ -1,5 +1,5 @@
 import { findByEmail, findById, createOne } from "../service/ticket.service.js";
-import { generateUniqueCode } from "../utils.js";
+import { generateUniqueCode } from "../../utils/utils.js";
 import { findCartById } from "./cart.controller.js";
 import { findAllProduct } from "./products.controller.js";
 

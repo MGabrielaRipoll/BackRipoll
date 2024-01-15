@@ -4,9 +4,10 @@ import cartRouter from './routes/cart.router.js'
 import chatsRouter from './routes/chats.router.js'
 import sessionRouter from './routes/session.router.js'
 import viewsRouter from "./routes/views.router.js";
+import loggerRouter from "./routes/logger.router.js";
 import mockingRouter from "./routes/mockingproducts.router.js"
 import cookieRouter from './routes/cookie.router.js'
-import { __dirname } from "./utils.js";
+import { __dirname } from "./utils.js"
 import { Server } from "socket.io";
 import { engine } from "express-handlebars";
 import { Manager } from './DAL/daos/MongoDB/productManager.mongo.js'
@@ -19,6 +20,7 @@ import "./DB/configDB.js";
 import "./passport.js";
 import passport from "passport";
 import fileStore from "session-file-store";
+import { logger } from "./logger.js"
 import  config  from "../src/config/config.js";
 import { authMiddleware } from './middlewares/auth.middlewares.js';
 import { errorMiddleware } from './middlewares/error.middlewares.js';
@@ -62,17 +64,18 @@ app.use('/api/views', viewsRouter);
 app.use("/api/cookie", cookieRouter);
 app.use("/api/session", sessionRouter);
 app.use('/api/chat', chatsRouter);
+app.use('/api/loggerTest', loggerRouter);
 
 app.use(errorMiddleware);
 
 const httpServer = app.listen(8080, () => {
-    console.log('Escuchando al puerto 8080');
+    logger.info('Escuchando al puerto 8080');
 });
 
 const socketServer = new Server(httpServer);
 
 socketServer.on("connection", async (socket) => {
-    console.log(`Cliente conectado: ${socket.id}`);
+    logger.info(`Cliente conectado: ${socket.id}`);
 
     // Manejo de mensajes
     socket.on("newUser", (user) => {
@@ -89,7 +92,7 @@ socketServer.on("connection", async (socket) => {
     try {
         // Manejo de productos (solo si estás utilizando Manager)
         const productosActualizados = await Manager.findAll(objeto);
-        console.log(productosActualizados);
+        logger.info(productosActualizados);
         socketServer.emit('productosActualizados', productosActualizados);
 
         socket.on('agregado', async (nuevoProducto) => {
@@ -98,7 +101,7 @@ socketServer.on("connection", async (socket) => {
                 const productosActualizados = await Manager.findAll();
                 socketServer.emit('productosActualizados', productosActualizados);
             } catch (error) {
-                console.error('Error al agregar el producto:', error);
+                logger.error('Error al agregar el producto:', error);
             }
         });
 
@@ -108,14 +111,14 @@ socketServer.on("connection", async (socket) => {
                 const productosActualizados = await Manager.findAll();
                 socketServer.emit('productosActualizados', productosActualizados);
             } catch (error) {
-                console.error('Error al eliminar el producto:', error);
+                logger.error('Error al eliminar el producto:', error);
             }
         })
     } catch (error) {
-        console.error("Error de conexión");
+        logger.error("Error de conexión");
     }
 
     socket.on('disconnect', () => {
-        console.log('Un cliente se ha desconectado.');
+        logger.info('Un cliente se ha desconectado.');
     });
 });

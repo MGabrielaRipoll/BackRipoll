@@ -1,5 +1,6 @@
 import { existsSync, promises } from "fs";
 const path = "CartsFile.json";
+import {logger} from "../src/utils/logger.js"
 
 class Carts {
     async getCartsList() {
@@ -9,11 +10,11 @@ class Carts {
             const cartsData = JSON.parse(cartsFile);
             return cartsData;
         } else {
-            console.log("no existe el archivo");
+            logger.info("no existe el archivo");
             return [];
         }
         } catch (error) {
-        console.log("error", error);
+        logger.error("error", error);
         return error;
         }
     }

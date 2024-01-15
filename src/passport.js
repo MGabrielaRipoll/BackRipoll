@@ -1,4 +1,5 @@
 import passport from "passport";
+import { logger } from "./logger.js"
 import { Users } from "../src/DAL/daos/MongoDB/usersManager.mongo.js";
 import { Cart } from '../src/DAL/daos/MongoDB/cartsManager.mongo.js'
 import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt";
@@ -86,7 +87,7 @@ passport.use("login", new LocalStrategy(
                 return done(null, false, { message: "Invalid password" });
             }
             // console.log("user passport", user);
-            
+            logger.info("passport", user);
             return done(null, user);
         } catch (error) {
             return done(error); // Devuelve el error a Passport
@@ -121,11 +122,12 @@ passport.use("github",
                     password: " ",
                     cartId: cart._id,
                 };
-                // console.log(infoUser);
+                logger.info(infoUser);
                 const createdUser = await Users.createOne(infoUser);
                 done(null, createdUser);
                 } catch (error) {
-                done(error);
+                    logger.error("created fail")
+                    done(error);
                 }
         }
     )
