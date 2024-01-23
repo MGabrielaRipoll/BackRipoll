@@ -79,12 +79,13 @@ router.get("/signup", async (req, res) => {
 });
 
 router.get("/restaurarviamail", (req,res) => {
-    const token = jwt.sign({}, config.secret_jwt, { expiresIn: '1h' });
+    const token = jwt.sign({}, config.secret_jwt);
     res.render("restaurarviamail", { token: token, style:"product"});
 });
 
 router.get("/restaurar", (req, res) => {
     const { token } = req.query;
+    res.cookie('tokenRest', token);
     res.render("restaurar", {  token: token, style:"product" });
 });
 

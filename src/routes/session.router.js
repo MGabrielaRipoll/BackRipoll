@@ -294,28 +294,30 @@ router.post("/restaurar", async (req, res) => {
     }
 
     try {
-        const tokenHeader = req.headers.authorization;
-        console.log(tokenHeader, typeof tokenHeader, "whatsss");
+        // const tokenHeader = req.headers.authorization;
+        // console.log(tokenHeader, typeof tokenHeader, "whatsss");
 
-        if (!tokenHeader || typeof tokenHeader !== 'string') {
-            return res.status(400).json({ error: 'Falta el token en el enlace.' });
-        }
+        // if (!tokenHeader || typeof tokenHeader !== 'string') {
+        //     return res.status(400).json({ error: 'Falta el token en el enlace.' });
+        // }
 
-        const tokenArray = tokenHeader.split(" ");
+        // const tokenArray = tokenHeader.split(" ");
 
-        if (tokenArray.length !== 2) {
-            return res.status(400).json({ error: 'Formato de token inválido.' });
-        }
+        // if (tokenArray.length !== 2) {
+        //     return res.status(400).json({ error: 'Formato de token inválido.' });
+        // }
 
-        const token = tokenArray[1];
-        console.log("Token:", token);
-
+        // const token = tokenArray[1];
+        // console.log("Token:", token);
+        const token = req.cookies.tokenRest;
+        console.log("qu onda", token);
         const decoded = jwt.verify(token, config.secret_jwt);
+        console.log("decoded", decoded, decoded.iat);
 
         const timestampInSeconds = decoded.iat;
         const currentTimeInSeconds = Math.floor(Date.now() / 1000);
         const expirationTimeInSeconds = timestampInSeconds + 60 * 60;
-
+        console.log("oooo", currentTimeInSeconds > expirationTimeInSeconds);
         if (currentTimeInSeconds > expirationTimeInSeconds) {
             return res.status(403).json({ error: 'El enlace ha caducado.' });
         }
