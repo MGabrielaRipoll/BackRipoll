@@ -10,7 +10,13 @@
     <form action="/api/session/restaurar" class="form-group" method="post">
         Email: <input type="email" name="email" id="email">
         Nueva contraseña: <input type="password" name="password" id="password">
-        <input type="submit" class="boton" value="Restaurar">
+        <input type="hidden" name="token" id="token" value="{{token}}">
+        
+        <button class="boton" onclick="restaurar()">RESTAURAR</button>
+
+        {{!-- <input type="submit" class="boton" value="Restaurar"> --}}
     </form>
 </div>
+<script src="/functions.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

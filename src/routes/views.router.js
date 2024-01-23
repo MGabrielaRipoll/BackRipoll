@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from '../middlewares/auth.middlewares.js';
-
+import jwt from "jsonwebtoken";
 // import {Manager} from '../dao/fileSystem/ProductManager.js'
 import { Manager } from '../DAL/daos/MongoDB/productManager.mongo.js'
 import { Cart } from '../DAL/daos/MongoDB/cartsManager.mongo.js'
@@ -9,6 +9,7 @@ import { Cookie } from "express-session";
 import passport from "passport";
 import cookieParser from 'cookie-parser';
 import { generateProduct } from "../faker.js";
+import config from "../config/config.js";
 
 
 // import { paginate } from "mongoose-paginate-v2";
@@ -32,7 +33,7 @@ router.get("/home", passport.authenticate('current', { session: false }), async 
         const sort = req.query.orders;
         const cart = await Cart.findCById(req.user.cartId)
 
-        res.render("home",  { cartId: req.user.cartId, quantity: cart.totalProducts, user: req.user, name: req.user.name, email : req.user.email, products: result, sort: sort, pages : pages, limit:limit, nextPage: nextPage,  prevPage: prevPage, style: "product" } );
+        res.render("home",  { cartId: req.user.cartId, uid: req.user.id, quantity: cart.totalProducts, user: req.user, name: req.user.name, email : req.user.email, products: result, sort: sort, pages : pages, limit:limit, nextPage: nextPage,  prevPage: prevPage, style: "product" } );
     } catch (error) {
         // console.error(error);
         res.status(500).send("Error interno del servidor");
@@ -77,8 +78,19 @@ router.get("/signup", async (req, res) => {
     res.render("signup", { style:"product" })
 });
 
+router.get("/restaurarviamail", (req,res) => {
+    const token = jwt.sign({}, config.secret_jwt, { expiresIn: '1h' });
+    res.render("restaurarviamail", { token: token, style:"product"});
+});
+
 router.get("/restaurar", (req, res) => {
-    res.render("restaurar", { style:"product" });
+    const { token } = req.query;
+    res.render("restaurar", {  token: token, style:"product" });
+});
+
+router.get("/users/premium/:uid", (req, res) => {
+    const { uid } = req.params;
+    res.render("usersPremium", { uid: uid, style: "product" });
 });
 
 router.get("/error", (req, res) => {
@@ -94,10 +106,8 @@ router.get('/carts/:cartId', async (req, res) => {
         if (!cart) {
             return res.status(404).send('Carrito no encontrado');
         }
-        // console.log("cart1",cart);
         const cartProducts = cart.products.map(doc => doc.toObject());
-        // console.log( "cart2", cartProducts.totalProducts);
-        // console.log("cartid del carrito...", cartId);
+      
         res.render('carts', {  cartId : cartId, products:cartProducts, style:"product" });
     } catch (error) {
         // console.error(error);
@@ -107,43 +117,22 @@ router.get('/carts/:cartId', async (req, res) => {
 router.get('/carts/:cartId/purchase', async (req, res) => {
     try {
         const {cartId} = req.params;
-        // console.log("cartTickeeloco", cartId);
         const cart = await Cart.findCById(cartId);
         res.render ('ticket', {cart: cart, cartId : cartId});
     } catch (error) {
         res.status(500).send('Error interno del servidor');
     }});
 
-// router.get("/products/:pid", async (req,res) => {
-//     try {
-//         const { pid } = req.params
-//         console.log(pid);
-//         // const cartId = req.session.user.cartId
-//         // console.log(cartId);
-//         const productFound = await Manager.findById(pid)
-//         console.log(productFound);
-//         if (!productFound) {
-//             return res.status(404).send('Producto no encontrado');
-//         }
-        
-//         res.render("productDetail", { pid: pid, product : productFound, style:"product"})
-//     } catch (error) {
-//         res.status(500).send('Error interno del servidor')
-//     }
-// })
 
 router.get("/products/:pid", async (req, res) => {
     try {
         const { pid } = req.params;
-        // console.log( "cookis", req.cookies);
         const cartId = req.cookies.cartId;
-        // console.log("cartId", cartId);
         const productFound = await Manager.findById(pid);
         const cart = await Cart.findCById(cartId);
         if (!productFound) {
             return res.status(404).send('Producto no encontrado');
         }
-        // Clone the object before passing it to Handlebars
         const clonedProduct = Object.assign({}, productFound);
         res.render("productDetail", {cartId: cartId, quantity: cart.totalProducts,  pid: pid, product: clonedProduct, style: "product" });
     } catch (error) {
@@ -154,7 +143,6 @@ router.get("/products/:pid", async (req, res) => {
 
 router.get("/changeproducts", async (req, res) => {
     try {
-        // const products = await Manager.getProductList();
     res.render("changeproducts");
     } catch {
         error
@@ -163,27 +151,21 @@ router.get("/changeproducts", async (req, res) => {
 
 
 
-router.get("/realTimeProducts", authMiddleware(["admin"]), async (req, res) => {
+router.get("/realTimeProducts", authMiddleware(["admin" , "premium"]), async (req, res) => {
     try {
         const products = await Manager.findAll({});
-        // const clonedProduct = products.docs.map(item => Object.assign({}, item));
-        // const template = handlebars.compile(yourTemplate);
-        // const result = template(clonedProduct);
+        
         const clonedProduct = products.docs.map(doc => doc.toObject());
-
-        // console.log(clonedProduct);
-
-        res.render("realTimeProducts", { products: clonedProduct, style: "product" });
+   
+        res.render("realTimeProducts", { products: clonedProduct, token: req.cookies.token, style: "product" });
     } catch (error) {
-        // console.error("Error en la ruta /realTimeProducts:", error);
         res.status(500).send("Internal Server Error");
     }
 });
 
 router.get("/chat", async (req, res) => {
     try {
-        // const products = await Manager.getProductList();
-    res.render("chats");
+        res.render("chats");
     } catch {
         error
     }

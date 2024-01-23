@@ -2,12 +2,12 @@ import { findAll, findCById, createOne, addProduct, deleteOneProduct, deleteAll,
 import { findById } from "../service/product.service.js";
 import { Cart } from "../DAL/daos/MongoDB/cartsManager.mongo.js";
 import { createOneT } from "../service/ticket.service.js";
-import { generateUniqueCode } from "../utils.js";
+import { generateUniqueCode } from "../utils/utils.js";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js" 
 import CustomError from "../errors/error.generate.js";
 import { ErrorMessages, ErrorName } from "../errors/errors.enum.js";
-import {logger} from "../logger.js"
+import {logger} from "../utils/logger.js"
 
 
 
@@ -52,19 +52,22 @@ export const createOneCart = async (req, res) => {
 
 export const addProductCart = async (req, res) => {
     const { cid , pid } = req.params;
-    // console.log( "cid", cid, "pid", pid);
     try {
         const productAdd = await findById(pid);
-        const cartNow = await findCById(cid);
-        if (productAdd.stock) {
-            const response = await addProduct(cid,pid);
-            res.status(200).json({ message: "Product added to cart", cart: response })}
-            else {
-                res.status(404).json({ message: "Stock insuficiente" });
-            };
+        if (productAdd.owner === req.user.mail) {
+            return res.status(404).json({ message: "You cannot add your own products" });
+        } else {
+            const cartNow = await findCById(cid);
+            if (productAdd.stock) {
+                const response = await addProduct(cid,pid);
+                return res.status(200).json({ message: "Product added to cart", cart: response })}
+                else {
+                    return res.status(404).json({ message: "Stock insuficiente" });
+                };
+        }
     } catch (error) {
         logger.error(error)
-        res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 

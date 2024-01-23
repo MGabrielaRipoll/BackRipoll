@@ -15,7 +15,6 @@ const deleteOne = async (cid, _id, product) => {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                // Add any additional headers as needed
             },
             body: JSON.stringify(data),
         });
@@ -37,9 +36,8 @@ const deleteOne = async (cid, _id, product) => {
 
 const addProductToCart = async (cid, _id, product) => {
     const cid = document.getElementById('cid').value;
-    // const {cid} = req.params;
-    // const id = document.getElementById('pid').value;
-    // console.log(id);
+    // const token = document.getElementById('token').value;
+
     const url = `http://localhost:8080/api/cart/${cid}/products/${product._id}`;
     const data = {
         cid: cid, 
@@ -53,7 +51,7 @@ const addProductToCart = async (cid, _id, product) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                // Add any additional headers as needed
+                // "Authorization": `Bearer ${token}`,        
             },
             body: JSON.stringify(data),
         });

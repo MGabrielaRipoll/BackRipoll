@@ -11,7 +11,10 @@
         <h2>WELCOME {{name}}</h2>
         <h4>Your email is: {{email}} </h4>
         <button class="boton"><a href="/api/session/signout">SIGN OUT</a></button>
-        <button class="boton"><a href="/api/views/realTimeProducts">ADMIN</a></button>
+        <input type="hidden" name="token" id="token" value="{{token}}">
+        <button class="boton"><a href="/api/views/realTimeProducts">Access DBA</a></button>
+        <button class="boton"><a href="/api/views/users/premium/{{uid}}">Change Role</a></button>
+
     </div>
 
 

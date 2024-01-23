@@ -1,5 +1,6 @@
 import CustomError from "../errors/error.generate.js";
 import { ErrorMessages, ErrorName } from "../errors/errors.enum.js";
+import { jwtValidation } from "../middlewares/jwt.middlewares.js";
 import { findAll, findById, createOne, deleteOneProduct, updateProduct } from "../service/product.service.js";
 
 export const findProductById = async (req, res) => {
@@ -36,34 +37,57 @@ export const createOneProduc = async (req, res) => {
 
     }
     try {
-        const response = await createOne(req.body);
-        res.status(200).json({ message: "Producto created", response });
+        
+        if (req.user.role === "premium") {
+            const newProduct = {...req.body, owner:req.user.mail};
+            const response = await createOne(newProduct);
+            res.status(200).json({ message: "Producto created", response });
+
+        } else {
+            const response = await createOne(req.body);
+            res.status(200).json({ message: "Producto created", response });
+
+        }
+        // res.status(200).json({ message: "Producto created", response });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 }
 
 export const deleteOneProdAll = async (req, res) => {
-    const { pid } = req.params;
+    const { id } = req.body;
+    const producForDelette = await findById(id);
+    console.log("producDel", req.user.mail, producForDelette.owner);
     try {
-        const response = await deleteOneProduct(pid);
-        if (!response) {
-            return CustomError.generateError(ErrorMessages.PRODUCT_NOT_FOUND,404, ErrorName.PRODUCT_NOT_FOUND);
+        if (req.user.role === "premium") {
+            if (producForDelette.owner === req.user.mail) {
+                const response = await deleteOneProduct(id);
+                console.log("response", producForDelette.owner === req.user.mail);
+                if (!response) {
+                    return res.status(404).json({ message: "Product not found" });
+                }
+                return res.status(200).json({ message: "Product deleted" });
+            } else {
+                return res.status(500).json({ message: "Este producto no fue creado por usted" });
+            }
+        } else {
+            const response = await deleteOneProduct(id);
+            if (!response) {
+                return res.status(404).json({ message: "Product not found" });
+            }
+            return res.status(200).json({ message: "Product deleted" });
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
 
-            // return res
-            // .status(404)
-            // .json({ message: "Product not found with the id provided" });
-        }
-        res.status(200).json({ message: "Product deleted" });
-        } catch (error) {
-        res.status(500).json({ message: error.message });
-        }
-}
 
 export const updateProducts = async (req, res) => {
-    const { pid } = req.params;
+    const { id } = req.body;
     try {
-        const response = await updateProduct(pid, req.body);
+        const response = await updateProduct(id, req.body);
         if (!response) {
             return CustomError.generateError(ErrorMessages.PRODUCT_NOT_FOUND,404, ErrorName.PRODUCT_NOT_FOUND);
 

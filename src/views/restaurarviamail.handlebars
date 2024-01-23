@@ -1,0 +1,21 @@
+<header>
+    <h1>
+        PELIMANIA "LA RIPOLL"
+    </h1>
+</header>
+<h2>
+        "Por favor, ingrese su Email y se le enviara un correo electrónico con los pasos
+        a seguir para restaurar su contraseña"
+</h2>
+<div class="login-container">
+    <form action="/api/session/restaurarviamail" class="form-group" method="post">
+        Email: <input type="email" name="email" id="email">
+        <input type="hidden" name="token" id="token" value="{{token}}">
+        <button class="boton" id="email" data-mail-id="{{email}}" onclick="restaurarviamail({{email}})">ENVIAR</button>
+    </form>
+</div>
+
+<script src="/functions.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+

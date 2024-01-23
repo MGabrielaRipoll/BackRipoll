@@ -28,7 +28,11 @@ class ProductsManager {
         const docs = response.docs;
         return {info, docs};
     }
-    
+    async findByOwner(owner) {
+        const products = productsModel.findAll();
+        const result = products.filter(product => product.owner === owner);
+        return result;
+    }
     async findById(id) {
         const result = await productsModel.findById(id);
         return result;

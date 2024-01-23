@@ -23,6 +23,8 @@
         CODE: <input type="number" name="code" id="code" required>
         CATEGORY: <input type="text" name="category" id="category" required>
         THUMBAIL: <input type="text" name="thumbail" id="thumbail">
+        <input type="hidden" name="token" id="token" value="{{token}}">
+
         <button type="button" onclick="createOneProduc()">AGREGAR</button>
     </form>
 
@@ -31,6 +33,7 @@
     <!-- FORMULARIO PARA ELIMINAR -->
     <form id="formEliminar">
         ID: <input type="text" name="id" id="id" required>
+        <input type="hidden" name="token" id="token" value="{{token}}">
         <button type="button" onclick="deleteOneProdAll()">ELIMINAR</button>
     </form>
 

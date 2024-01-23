@@ -1,4 +1,4 @@
-import { Users } from "..//DALdaos/MongoDB/usersManager.mongo.js";
+import { Users } from "../DAL/daos/MongoDB/usersManager.mongo.js";
 import { hashData } from "../utils/utils.js";
 import UsersResponse from "../DAL/dtos/users-response.dto.js";
 
@@ -14,6 +14,18 @@ export const findByEmail = (id) => {
     const user = Users.findByEmail(id);
     return user;
 };
+
+
+export const updateUser = async (id, obj) => {
+    try {
+
+        const userModific = await Users.updateOne({ _id: id }, obj);
+        return userModific;
+    } catch (error) {
+        throw new Error(`Error updating user: ${error.message}`);
+    }
+};
+
 
 export const createOne = (obj) => {
     const hashedPassword = hashData(obj.password);

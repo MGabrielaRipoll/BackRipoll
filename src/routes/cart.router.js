@@ -6,12 +6,12 @@ import { findCartById, findAllCart, addProductCart, createOneCart, cartBuy, dele
 const router = Router();
 
 router.get("/", findAllCart)
-router.post("/",authMiddleware(["user"]),  createOneCart)
+router.post("/",authMiddleware(["user","premium"]),  createOneCart)
 router.get("/:cid", findCartById)
 router.get("/:cid/purchase", cartBuy)
-router.put("/:cid/products/:pid",authMiddleware(["user"]),  updateCartQuantity)
-router.post("/:cid/products/:pid",authMiddleware(["user"]), addProductCart)
-router.delete("/:cid/products/:pid",authMiddleware(["user"]), deleteOneProdCart)
-router.delete("/:cid",authMiddleware(["user"]),  deleteOneCartAll)
+router.put("/:cid/products/:pid",authMiddleware(["user","premium"]),  updateCartQuantity)
+router.post("/:cid/products/:pid",authMiddleware(["user","premium"]), addProductCart)
+router.delete("/:cid/products/:pid",authMiddleware(["user","premium"]), deleteOneProdCart)
+router.delete("/:cid",authMiddleware(["user","premium"]),  deleteOneCartAll)
 
 export default router;

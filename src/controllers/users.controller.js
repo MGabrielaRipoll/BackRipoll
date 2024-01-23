@@ -1,4 +1,4 @@
-import { findByEmail, findById, createOne } from "../services/user.service.js";
+import { findByEmail, findById, createOne, updateUser } from "../service/user.service.js";
 import { jwtValidation } from "../middlewares/jwt.middlewares.js";
 import { authMiddleware } from "../middlewares/auth.middlewares.js";
 import passport from "passport";
@@ -31,7 +31,7 @@ export const findUserByEmail = async (req, res) => {
 
 export const createUser =  async (req, res) => {
     const { name, lastName, email, password } = req.body;
-    if (!name || !lastName || !email || !password) {
+    if (!name || !lastName || !email || !password || !role) {
         // return res.status(400).json({ message: "All fields are required" });
         return CustomError.generateError(ErrorMessages.ALL_FIELDS_REQUIRED,400,ErrorName.ALL_FIELDS_REQUIRED);
 
@@ -39,3 +39,30 @@ export const createUser =  async (req, res) => {
     const createdUser = await createOne(req.body);
     res.status(200).json({ message: "User created", user: createdUser });
 };
+
+
+
+export const updateUserNow = async (req, res) => {
+    const { uid } = req.params;
+    const { role, email } = req.body;
+    try {        
+    const userToUpdate = await findById(uid);
+    if (!userToUpdate) {
+        return res.status(404).json({ message: "User not found" });
+    }
+    if (userToUpdate._doc.email !== email ){
+        return res.status(404).json({ message: "The information provided is incorrect" });
+    }
+    if (userToUpdate.role !== role) {
+        const newUser = { ...userToUpdate._doc, role: role };
+        console.log(newUser, "nuevo usuario");
+        const updatedUser = await updateUser(uid, newUser);
+        res.status(200).json({ message: "User updated", user: updatedUser });
+        } else {
+            res.status(402).json({ message: "Nothing has changed" });
+            }
+    }
+    catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }

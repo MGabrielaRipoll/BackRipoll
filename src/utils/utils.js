@@ -1,12 +1,12 @@
-import { dirname } from "path";
+import { dirname, join } from "path";
 import bcrypt from "bcrypt";
 import { fileURLToPath } from "url";
 import jwt from "jsonwebtoken";
-import config from "./config/config.js"
+import config from "../config/config.js"
 
 const secretKeyJwt = config.secret_jwt;
 
-export const __dirname = dirname(fileURLToPath(import.meta.url));
+export const __dirname = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 export const hashData = async (data) => {
     return bcrypt.hash(data, 10);

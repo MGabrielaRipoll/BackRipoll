@@ -1,13 +1,20 @@
 import { Router } from "express";
+import  config  from "../config/config.js";
 import { Users } from "../DAL/daos/MongoDB/usersManager.mongo.js";
-import { hashData, compareData } from "../utils.js";
-import { generateToken } from "../utils.js";
+import { hashData, compareData } from "../utils/utils.js";
+import { generateToken } from "../utils/utils.js";
+import { transporter } from "../utils/nodemailer.js"
+import jwt from 'jsonwebtoken';
+
 
 // import { jwtValidation } from "../middlewares/jwt.middlewares.js";
 // import { authMiddleware } from "../middlewares/auth.mifflewares.js";
 import passport from "passport";
+// import pkg from 'jsonwebtoken';
 
 const router = Router();
+// const { sign, verify } = pkg;
+
 
 // router.post("/signup", async (req, res) => {
 //     const { name, lastName , email, password } = req.body;
@@ -214,25 +221,123 @@ router.get("/signout", (req, res) => {
     res.redirect("/api/views/login");
 });
 
+router.post("/restaurarviamail", async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await Users.findByEmail(email);
+
+        if (!user) {
+            return res.redirect("/api/session/signup");
+        }
+        const token = jwt.sign({ email }, config.secret_jwt, { expiresIn: '1h' }); // Token válido por 1 hora
+
+        await transporter.sendMail({
+            from: "mariagabriela.ripoll@gmail.com",
+            to: email,
+            subject: "Recuperacion de contraseña",
+            html: `<b>Por favor haga clic en el siguiente link para restablecer su contraseña http://localhost:8080/api/views/restaurar?token=${token} </b>`,
+        });
+
+        res.status(200).json({ success: 'Mail enviado con éxito' });
+    } catch (error) {
+        console.error("Error al enviar el correo:", error);
+        res.status(500).json({ error: 'Hubo un error interno en el servidor.' });
+    }
+});
+
+// router.post("/restaurar", async (req, res) => {
+//     const { email, password } = req.body;
+//     if (!email && !password){
+//         return res.status(400).json({ error: 'All fields are required' });
+//     }
+//     try {
+//         const tokenHeader = req.headers.authorization;
+//         if (tokenHeader && typeof tokenHeader === 'string') {
+//             const tokenArray = tokenHeader.split(" ");
+//             if (tokenArray.length === 2) {
+//                 const token = tokenArray[1];
+//                 console.log("Token por fin:", token);
+//                 if (!token) {
+//                     return res.status(400).json({ error: 'Falta el token en el enlace.' });
+//                 }
+//             }}
+//         const decoded = jwt.verify(token, secretKey);
+//         const timestampInSeconds = decoded.iat;
+//         const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+//         const expirationTimeInSeconds = timestampInSeconds + 60 * 60; 
+//         if (currentTimeInSeconds > expirationTimeInSeconds) {
+//             return res.status(403).json({ error: 'El enlace ha caducado.' });
+//         }
+
+//         const user = await Users.findByEmail(email);
+//         if (!user) {
+
+//             return res.redirect("/api/session/signup");
+//         }
+//         const hashedPassword = await hashData(password);
+//         user.password = hashedPassword;
+//         await user.save();
+        
+//         res.redirect("/api/views/login")
+//         // res.status(200).json({ message: "Password updated" });
+//         } catch (error) {
+//         res.status(500).json({  error: 'Hubo un error interno en el servidor.' });
+//     }
+// });
 
 router.post("/restaurar", async (req, res) => {
     const { email, password } = req.body;
-    try {
-        const user = await Users.findByEmail(email);
-        if (!user) {
 
+    if (!email || !password) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    try {
+        const tokenHeader = req.headers.authorization;
+        console.log(tokenHeader, typeof tokenHeader, "whatsss");
+
+        if (!tokenHeader || typeof tokenHeader !== 'string') {
+            return res.status(400).json({ error: 'Falta el token en el enlace.' });
+        }
+
+        const tokenArray = tokenHeader.split(" ");
+
+        if (tokenArray.length !== 2) {
+            return res.status(400).json({ error: 'Formato de token inválido.' });
+        }
+
+        const token = tokenArray[1];
+        console.log("Token:", token);
+
+        const decoded = jwt.verify(token, config.secret_jwt);
+
+        const timestampInSeconds = decoded.iat;
+        const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+        const expirationTimeInSeconds = timestampInSeconds + 60 * 60;
+
+        if (currentTimeInSeconds > expirationTimeInSeconds) {
+            return res.status(403).json({ error: 'El enlace ha caducado.' });
+        }
+
+        const user = await Users.findByEmail(email);
+
+        if (!user) {
             return res.redirect("/api/session/signup");
         }
+
         const hashedPassword = await hashData(password);
         user.password = hashedPassword;
         await user.save();
-        
-        res.redirect("/api/views/login")
+
+        res.redirect("/api/views/login");
         // res.status(200).json({ message: "Password updated" });
-        } catch (error) {
-        res.status(500).json({ error });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Hubo un error interno en el servidor.' });
     }
 });
+
 
 router.get('/current', passport.authenticate('current', {session: false}), async(req, res) => {
     res.status(200).json({message: 'User logged', user: req.user})  

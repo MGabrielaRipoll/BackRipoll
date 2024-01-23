@@ -4,10 +4,11 @@ import cartRouter from './routes/cart.router.js'
 import chatsRouter from './routes/chats.router.js'
 import sessionRouter from './routes/session.router.js'
 import viewsRouter from "./routes/views.router.js";
+import usersRouter from "./routes/user.router.js";
 import loggerRouter from "./routes/logger.router.js";
 import mockingRouter from "./routes/mockingproducts.router.js"
 import cookieRouter from './routes/cookie.router.js'
-import { __dirname } from "./utils.js"
+import { __dirname } from "../src/utils/utils.js"
 import { Server } from "socket.io";
 import { engine } from "express-handlebars";
 import { Manager } from './DAL/daos/MongoDB/productManager.mongo.js'
@@ -20,7 +21,7 @@ import "./DB/configDB.js";
 import "./passport.js";
 import passport from "passport";
 import fileStore from "session-file-store";
-import { logger } from "./logger.js"
+import { logger } from "../src/utils/logger.js"
 import  config  from "../src/config/config.js";
 import { authMiddleware } from './middlewares/auth.middlewares.js';
 import { errorMiddleware } from './middlewares/error.middlewares.js';
@@ -63,6 +64,7 @@ app.use('/api/cart', cartRouter);
 app.use('/api/views', viewsRouter);
 app.use("/api/cookie", cookieRouter);
 app.use("/api/session", sessionRouter);
+app.use("/api/users", usersRouter);
 app.use('/api/chat', chatsRouter);
 app.use('/api/loggerTest', loggerRouter);
 
