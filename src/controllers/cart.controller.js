@@ -6,6 +6,8 @@ import { generateUniqueCode } from "../utils/utils.js";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js" 
 import CustomError from "../errors/error.generate.js";
+import path from 'path';
+import { __dirname } from "../utils/utils.js";
 import { ErrorMessages, ErrorName } from "../errors/errors.enum.js";
 import {logger} from "../utils/logger.js"
 
@@ -62,7 +64,7 @@ export const addProductCart = async (req, res) => {
                 const response = await addProduct(cid,pid);
                 return res.status(200).json({ message: "Product added to cart", cart: response })}
                 else {
-                    return res.status(404).json({ message: "Stock insuficiente" });
+                    return res.status(404).json({ message: "Insufficient stock" });
                 };
         }
     } catch (error) {
@@ -106,45 +108,12 @@ export const updateCartQuantity = async (req, res) => {
     }
 }
 
-// export const cartBuy = async (req,res) => {
-//     try {
-//         const cartId = req.params.cid;
-//         const cart = await findById(cartId);
-//         if (!cart) {
-//             return res.status(404).json({ error: 'Carrito no encontrado' });
-//         }
-//     // Verificar el stock y actualizar la base de datos si es posible
-//     const promises = cart.products.map(async (item) => {      
-//         const product = item.product;
-//         const requestedQuantity = item.quantity;
-        
-//         if (product.stock >= requestedQuantity) {
-//                 product.stock -= requestedQuantity;
-//                 await product.save();
-//             // const newCart = await deleteOneProduct(item.product);
-//         }  
-//         else {
-//                 return Promise.reject(`No hay suficiente stock para ${product.title}`);
-//         }});
-//         // console.log(newCart, "cartttttt");
-//     await Promise.all(promises);
-//         // Puedes agregar más lógica aquí, como generar el código de compra, calcular el monto total, etc.
-//         // Eliminar el carrito después de la compra
-//         // await Cart.findByIdAndRemove(cartId);
-//     res.json({ success: true, message: 'Compra exitosa' });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Error interno del servidor' });
-// }};
 export const cartBuy = async (req,res) => {
     try {
         const { cid } = req.params;
-        console.log("cid ticket", cid);
         const secretKeyJwt = config.secret_jwt;        
         const cart = await Cart.findCById(cid);  
-        console.log("cart ticket",cart);
         const products = cart.products;
-        console.log("product ticket",products);
         let availableProducts = [];
         let unavailableProducts = [];
         let totalAmount = 0;
@@ -164,13 +133,9 @@ export const cartBuy = async (req,res) => {
         logger.info("disponible", availableProducts, "nodisp", unavailableProducts);
         cart.products = unavailableProducts;
         await cart.save();
-        // const token = req.cookie.token;
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTZlMWFjMjU1YzY4OTdjODNmNDdjZDMiLCJuYW1lIjoiR2FicmllbGEiLCJtYWlsIjoiZ2FieW1hdWp3QGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzAzNzIxMDkwLCJleHAiOjE3MDM3MjQ2OTB9.lKMgvK37iteA4BTGSKa3EXJyBB2ekxqOb7wtEeD7Kho";
-        logger.info("token ticket",token);
+        const authorizationHeader = req.headers['authorization'];
+        const token = authorizationHeader.split(' ')[1];
         const userToken = jwt.verify(token, secretKeyJwt);
-        logger.info("userticket", userToken);
-        // req.user = userToken;
-        // console.log("userCart", req.cookies);
         if (availableProducts.length) {
             const ticket = {
                 code: generateUniqueCode(),
@@ -178,10 +143,8 @@ export const cartBuy = async (req,res) => {
                 amount: totalAmount,
                 purchaser: userToken.mail,
             };
-
-            logger.info("ticket", ticket);
             const ticketFinal = await createOneT(ticket);
-            // location.reload(true);
+            res.cookie('ticketId', ticketFinal.id, { httpOnly: true });
             return { availableProducts, totalAmount, ticketFinal };
         }
         return { unavailableProducts };

@@ -284,7 +284,7 @@ async function changeUserRole(uid) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ role: selectedRole }),
+            body: JSON.stringify({ role: selectedRole , email: email }),
         });
 
         if (!response.ok) {
@@ -297,4 +297,26 @@ async function changeUserRole(uid) {
     } catch (error) {
         console.error('Request error:', error.message);
     }
+}
+async function buy (cartId) {
+    const token = document.getElementById('token').value;
+    console.log("token front", token);
+    try {
+        const response = await fetch(`/api/cart/${cartId}/purchase`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`,       
+            },
+        });
+
+        if (!response.ok) {
+            console.error('Error', response.status, response.statusText);
+            return;
+        }
+        const result = await response.json();
+        console.log('Buy complete', result);
+    } catch (error) {
+        console.error('Request error:', error.message);
+    }   
 }

@@ -28,7 +28,7 @@
         <input type="hidden" name="token" id="token" value="{{token}}">
 
         <button class="add-to-cart-btn" data-product-id="{{product._id}}" onclick="deleteAll('{{cartId}}')">Remove all to Cart</button>
-        <button><a href="/api/carts/{{cartId}}/purchase">COMPRAR</a></button>
+        <button class="buy" data-token="{{token}}" onclick="buy('{{cartId}}')">COMPRAR</button>
 
     </div>
 

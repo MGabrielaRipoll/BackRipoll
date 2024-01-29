@@ -45,6 +45,7 @@ export const createUser =  async (req, res) => {
 export const updateUserNow = async (req, res) => {
     const { uid } = req.params;
     const { role, email } = req.body;
+    console.log("update", uid, role, email);
     try {        
     const userToUpdate = await findById(uid);
     if (!userToUpdate) {

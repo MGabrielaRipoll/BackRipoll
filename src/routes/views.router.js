@@ -108,8 +108,8 @@ router.get('/carts/:cartId', async (req, res) => {
             return res.status(404).send('Carrito no encontrado');
         }
         const cartProducts = cart.products.map(doc => doc.toObject());
-      
-        res.render('carts', {  cartId : cartId, products:cartProducts, style:"product" });
+    console.log(req.cookies.token, "tokencitoooo");
+        res.render('carts', {  token:req.cookies.token, cartId : cartId, products:cartProducts, style:"product" });
     } catch (error) {
         // console.error(error);
         res.status(500).send('Error interno del servidor');
@@ -155,15 +155,16 @@ router.get("/changeproducts", async (req, res) => {
 router.get("/realTimeProducts", authMiddleware(["admin" , "premium"]), async (req, res) => {
     try {
         const products = await Manager.findAll({});
-        
         const clonedProduct = products.docs.map(doc => doc.toObject());
-   
         res.render("realTimeProducts", { products: clonedProduct, token: req.cookies.token, style: "product" });
     } catch (error) {
         res.status(500).send("Internal Server Error");
     }
 });
-
+router.get("/ticket", async(req,res)=>{
+    const ticketFound = findticketById(req.cookies.ticketId);
+    res.render("ticket", {ticket:ticketFound})
+})
 router.get("/chat", async (req, res) => {
     try {
         res.render("chats");

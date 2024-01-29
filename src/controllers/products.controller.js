@@ -68,7 +68,7 @@ export const deleteOneProdAll = async (req, res) => {
                 }
                 return res.status(200).json({ message: "Product deleted" });
             } else {
-                return res.status(500).json({ message: "Este producto no fue creado por usted" });
+                return res.status(500).json({ message: "This product was not created by you" });
             }
         } else {
             const response = await deleteOneProduct(id);

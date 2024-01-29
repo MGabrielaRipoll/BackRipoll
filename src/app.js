@@ -23,6 +23,8 @@ import passport from "passport";
 import fileStore from "session-file-store";
 import { logger } from "../src/utils/logger.js"
 import  config  from "../src/config/config.js";
+import { swaggerSetup } from "../src/utils/swagger.js";
+import swaggerUi from "swagger-ui-express";
 import { authMiddleware } from './middlewares/auth.middlewares.js';
 import { errorMiddleware } from './middlewares/error.middlewares.js';
 const FileStore = fileStore(session);
@@ -67,6 +69,8 @@ app.use("/api/session", sessionRouter);
 app.use("/api/users", usersRouter);
 app.use('/api/chat', chatsRouter);
 app.use('/api/loggerTest', loggerRouter);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSetup));
+
 
 app.use(errorMiddleware);
 
