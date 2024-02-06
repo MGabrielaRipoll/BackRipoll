@@ -5,8 +5,10 @@ import { findAll, findById, createOne, deleteOneProduct, updateProduct } from ".
 
 export const findProductById = async (req, res) => {
     const { pid } = req.params;
+    console.log(pid, "pidtest");
     try {
         const product = await findById(pid);
+        console.log(product, "jihfuarihgnuihgu");
         if (!product) {
             // return res
             // .status(404)
@@ -57,7 +59,6 @@ export const createOneProduc = async (req, res) => {
 export const deleteOneProdAll = async (req, res) => {
     const { id } = req.body;
     const producForDelette = await findById(id);
-    console.log("producDel", req.user.mail, producForDelette.owner);
     try {
         if (req.user.role === "premium") {
             if (producForDelette.owner === req.user.mail) {

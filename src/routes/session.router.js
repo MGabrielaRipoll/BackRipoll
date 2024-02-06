@@ -121,9 +121,11 @@ router.post("/signup",(req, res, next)=>{ passport.authenticate("signup", {
             };
             // Generar el token JWT
             const token = generateToken(payload);
+            console.log(token, "tokennnnnnn");
             const carritoUser = user.cartId;
             res.cookie('cartId', carritoUser, { maxAge: 60000, httpOnly: true });
             res.cookie('token', token, { maxAge: 60000, httpOnly: true });
+            console.log(req.cookies.token, "token back");
             return res.redirect('/api/views/home');
         })(req, res, next);
     });

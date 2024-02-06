@@ -4,14 +4,14 @@ import { productsModel } from "../../../DB/Models/products.models.js";
 
 class ProductsManager {
     async findAll(obj) {
-        const { limit = 20, page = 1, orders = 1, ...filter } = obj;
+        const { limit = 20, page = 1, orders = 1 } = obj;
         const options = {
-            page: parseInt(page),
             limit: parseInt(limit),
+            page: parseInt(page),
             sort: parseInt(orders) === 1 ? 'price' : '-price',
         };
-        
-        const response = await productsModel.paginate(filter, options);
+        console.log(options, "optionss");
+        const response = await productsModel.paginate({}, options);
         const info = {
             status: response.docs ? "success" : "error",
             results: response.docs,
@@ -26,10 +26,11 @@ class ProductsManager {
                 : null,
         };
         const docs = response.docs;
+        console.log(response, "response");
         return {info, docs};
     }
     async findByOwner(owner) {
-        const products = productsModel.findAll();
+        const products = await productsModel.find();
         const result = products.filter(product => product.owner === owner);
         return result;
     }
