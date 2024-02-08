@@ -206,7 +206,6 @@ const createOneProduc = async () => {
     const category = document.getElementById('category').value;
     const thumbail = document.getElementById('thumbail').value;
     const token = document.getElementById('token').value;
-
     const data = {
         title: title,
         description: description,

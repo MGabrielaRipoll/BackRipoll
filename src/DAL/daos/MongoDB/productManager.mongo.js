@@ -10,7 +10,6 @@ class ProductsManager {
             page: parseInt(page),
             sort: parseInt(orders) === 1 ? 'price' : '-price',
         };
-        console.log(options, "optionss");
         const response = await productsModel.paginate({}, options);
         const info = {
             status: response.docs ? "success" : "error",
@@ -26,12 +25,18 @@ class ProductsManager {
                 : null,
         };
         const docs = response.docs;
-        console.log(response, "response");
         return {info, docs};
     }
     async findByOwner(owner) {
-        const products = await productsModel.find();
-        const result = products.filter(product => product.owner === owner);
+        const products = await productsModel.findAll();
+        const result = products.filter(product => products.owner === owner);
+        return result;
+    }
+    async findByCode(code) {
+        const products = await productsModel.findAll();
+        console.log(products, "me pudris");
+        const result = products.filter(product => products.code === code);
+        console.log(result, code, "whats");
         return result;
     }
     async findById(id) {

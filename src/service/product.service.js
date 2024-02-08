@@ -1,8 +1,8 @@
 import { Manager } from "../DAL/daos/MongoDB/productManager.mongo.js"
 
 
-export const findAll = () => {
-    const products = Manager.findAll();
+export const findAll = (obj) => {
+    const products = Manager.findAll(obj);
     return products;
 };
 

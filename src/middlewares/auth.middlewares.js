@@ -13,7 +13,6 @@ export const authMiddleware = (roles) => {
         const token = req.cookies.token;
         const userToken = jwt.verify(token, secretKeyJwt);
         req.user = userToken;
-        console.log(req.user);
         if (roles.includes(req.user.role)) {
             return next();
         }

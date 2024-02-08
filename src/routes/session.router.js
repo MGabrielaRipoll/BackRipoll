@@ -105,12 +105,14 @@ router.post("/signup",(req, res, next)=>{ passport.authenticate("signup", {
 //         })(req, res, next);
 //     });
     router.post('/login', (req, res, next) => {
+        const { email , password } = req.body
         passport.authenticate("login", (err, user) => {
-            // console.log("user", user, req.user, req.cookies.token);
+            // console.log("user", req.body, user, req.user, req.cookies.token);
             if (err) {
                 return next(err);
             }
-            if (!user) {
+
+            if (!req) {
                 return res.redirect('/api/views/signup'); 
             }
             const payload = {
@@ -121,11 +123,9 @@ router.post("/signup",(req, res, next)=>{ passport.authenticate("signup", {
             };
             // Generar el token JWT
             const token = generateToken(payload);
-            console.log(token, "tokennnnnnn");
             const carritoUser = user.cartId;
             res.cookie('cartId', carritoUser, { maxAge: 60000, httpOnly: true });
             res.cookie('token', token, { maxAge: 60000, httpOnly: true });
-            console.log(req.cookies.token, "token back");
             return res.redirect('/api/views/home');
         })(req, res, next);
     });
