@@ -26,6 +26,26 @@ export const updateUser = async (id, obj) => {
     }
 };
 
+export const updatePerfilDoc = async (id, {dni, address, bank}) => {
+    const userDocument = await Users.updateOne(id, {
+        documents: [
+            ...dni?[{
+                name: "dni",
+                reference: dni[0].path,
+            }]:[],
+            ...address?[{
+                name: "address",
+                reference: address[0].path,
+            }]:[],
+            ...bank?[{
+                name: "bank",
+                reference: bank[0].path,
+            }]:[],
+        ],
+    });
+    return userDocument;
+}
+
 
 export const createOne = (obj) => {
     const hashedPassword = hashData(obj.password);

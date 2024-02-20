@@ -86,9 +86,13 @@ passport.use("login", new LocalStrategy(
             if (!isPasswordValid) {
                 return done(null, false, { message: "Invalid password" });
             }
+            const userDate = await Users.updateOne(
+                { _id: user.id },
+                { last_connection: new Date() } 
+            );
             // console.log("user passport", user);
-            logger.info("passport", user);
-            return done(null, user);
+            const userLogin = await Users.findById(user.id);
+            return done(null, userLogin);
         } catch (error) {
             return done(error); // Devuelve el error a Passport
         }

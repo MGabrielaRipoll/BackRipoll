@@ -30,7 +30,6 @@ class CartsManager {
         const selectedCart = await cartsModel.findById(cid);
         if (selectedCart) {
             const productIndex = selectedCart.products.findIndex(p => p.product.equals(pid));   
-            console.log(productIndex);
             if (productIndex !== -1) {
                 selectedCart.products[productIndex].quantity += 1;
             } else {
@@ -96,6 +95,7 @@ class CartsManager {
 
     async update(cid, pid, quantity) {
         const selectedCart = await cartsModel.findById(cid);
+
         if (selectedCart) {
             const productIndex = selectedCart.products.findIndex(p => p.product.equals(pid));
             console.log(productIndex);

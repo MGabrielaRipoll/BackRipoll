@@ -1,12 +1,23 @@
 import { Router } from "express";
-
-import {  findUserById, findUserByEmail, createUser, updateUserNow } from "../controllers/users.controller.js";
+import upload from "../middlewares/multer.middlewares.js";
+import {  findUserById, findUserByEmail, createUser, updateUserNow, updatePerfil } from "../controllers/users.controller.js";
 const router = Router();
 
 router.get(
-  "/:idUser", findUserById
+  "/:uid", findUserById
 );
-router.put("/premium/:uid", updateUserNow);
+router.post(
+  "/:uid/documents",
+  upload.fields([
+    { name: "dni", maxCount: 1 },
+    { name: "address", maxCount: 1 },
+    { name: "bank", maxCount: 1 },
+  ]), 
+  updatePerfil
+);
+router.put(
+  "/premium/:uid", updateUserNow
+);
 
 
 export default router;

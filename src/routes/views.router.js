@@ -10,9 +10,7 @@ import passport from "passport";
 import cookieParser from 'cookie-parser';
 import { generateProduct } from "../faker.js";
 import config from "../config/config.js";
-
-
-// import { paginate } from "mongoose-paginate-v2";
+import { paginate } from "mongoose-paginate-v2";
 
 
 const router = Router();
@@ -32,7 +30,7 @@ router.get("/home", passport.authenticate('current', { session: false }), async 
         const {pages, nextPage, prevPage}  = products.info;
         const sort = req.query.orders;
         const cart = await Cart.findCById(req.user.cartId)
-
+        console.log(nextPage, prevPage, pages, "paginacion");
         res.render("home",  { cartId: req.user.cartId, uid: req.user.id, quantity: cart.totalProducts, user: req.user, name: req.user.name, email : req.user.email, products: result, sort: sort, pages : pages, limit:limit, nextPage: nextPage,  prevPage: prevPage, style: "product" } );
     } catch (error) {
         // console.error(error);
@@ -69,12 +67,9 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/signup", async (req, res) => {
-
-    if (req.session.user) {
-        
+    if (req.session.user) {    
         return res.redirect("/login", { style:"product" })    
-    }
-    
+    } 
     res.render("signup", { style:"product" })
 });
 
@@ -89,9 +84,9 @@ router.get("/restaurar", (req, res) => {
     res.render("restaurar", {  token: token, style:"product" });
 });
 
-router.get("/users/premium/:uid", (req, res) => {
+router.get("/users/:uid", (req, res) => {
     const { uid } = req.params;
-    res.render("usersPremium", { uid: uid, style: "product" });
+    res.render("usersPerfil", { uid: uid, style: "product" });
 });
 
 router.get("/error", (req, res) => {
@@ -108,7 +103,6 @@ router.get('/carts/:cartId', async (req, res) => {
             return res.status(404).send('Carrito no encontrado');
         }
         const cartProducts = cart.products.map(doc => doc.toObject());
-    console.log(req.cookies.token, "tokencitoooo");
         res.render('carts', {  token:req.cookies.token, cartId : cartId, products:cartProducts, style:"product" });
     } catch (error) {
         // console.error(error);

@@ -28,14 +28,16 @@ class ProductsManager {
         return {info, docs};
     }
     async findByOwner(owner) {
-        const products = await productsModel.findAll();
-        const result = products.filter(product => products.owner === owner);
+        const products = await productsModel.find();
+        console.log(owner, products, "ASFSDGSAGAG");
+        const result = products.filter(product => product.owner === owner);
         return result;
     }
     async findByCode(code) {
-        const products = await productsModel.findAll();
+        console.log("Holisss", code);
+        const products = await productsModel.find();
         console.log(products, "me pudris");
-        const result = products.filter(product => products.code === code);
+        const result = products.filter(product => product.code === parseInt(code));
         console.log(result, code, "whats");
         return result;
     }

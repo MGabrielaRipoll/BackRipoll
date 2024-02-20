@@ -3,10 +3,20 @@
         PELIMANIA "LA RIPOLL"
     </h1>
 </header>
-<h2>Aqui puede cambiar su role en la pagina, tenga en cuenta que como usuario premium podra
-    dar de alta productos para su comercializacion, esperamos que su paso por nuestra pelimania
-    sea positivo y enriquecedor. 
+<h2>Bienvenido a tu perfil. Si deseas ser un miembro premium de esta hermosa comunidad por favor completa la documentacion solicitada.
+    Sera un placer contar contigo. Esperamos que disfrutes la experiencia en Pelimania.  
 </h2>
+
+<form action="/api/users/{{uid}}/documents" enctype="multipart/form-data" method="post">
+    DNI:<input type="file" name="dni" id="dni">
+    ADDRESS:<input type="file" name="address" id="address">
+    BANK:<input type="file" name="bank" id="bank">
+    <input type="submit" value="Enviar">
+</form>
+<br>
+<br>
+
+
 <form id="changeRoleForm">
         <label for="email">Email de Usuario:</label>
         <input type="text" id="email" name="email" required>

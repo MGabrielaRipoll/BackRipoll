@@ -1,4 +1,4 @@
-import { findByEmail, findById, createOne, updateUser } from "../service/user.service.js";
+import { findByEmail, findById, createOne, updateUser, updatePerfilDoc } from "../service/user.service.js";
 import { jwtValidation } from "../middlewares/jwt.middlewares.js";
 import { authMiddleware } from "../middlewares/auth.middlewares.js";
 import passport from "passport";
@@ -45,14 +45,24 @@ export const createUser =  async (req, res) => {
 export const updateUserNow = async (req, res) => {
     const { uid } = req.params;
     const { role, email } = req.body;
-    console.log("update", uid, role, email);
     try {        
     const userToUpdate = await findById(uid);
+ 
+    console.log(userToUpdate.documents[0], "por Dios");
     if (!userToUpdate) {
         return res.status(404).json({ message: "User not found" });
     }
+
+    if ( userToUpdate.role === role) {
+        return res.status(400).json({ message: "Your role is the same as the one you want to change" });
+    }
+    if (role === "premium") {
+        if (!userToUpdate.documents[0] || !userToUpdate.documents[1] || !userToUpdate.documents[2]) {
+            return res.status(400).json({ message: "Please update your documentation first" });
+        }
+    }
     if (userToUpdate._doc.email !== email ){
-        return res.status(404).json({ message: "The information provided is incorrect" });
+        return res.status(400).json({ message: "The information provided is incorrect" });
     }
     if (userToUpdate.role !== role) {
         const newUser = { ...userToUpdate._doc, role: role };
@@ -60,10 +70,25 @@ export const updateUserNow = async (req, res) => {
         const updatedUser = await updateUser(uid, newUser);
         res.status(200).json({ message: "User updated", user: updatedUser });
         } else {
-            res.status(402).json({ message: "Nothing has changed" });
-            }
+            res.status(400).json({ message: "Nothing has changed" });
+        }
     }
     catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
+
+export const updatePerfil = async (req,res) => {
+    const { uid } = req.params;
+    try {
+        const user = await findById(uid);
+        const dni = req.files.dni;
+        const address = req.files.address;
+        const bank = req.files.bank;
+        console.log(dni, address, bank, "vamossssss");
+        const response = await updatePerfilDoc(uid, { dni, address, bank });
+        res.status(201).json({ message: "Documents add" });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error" });
+    }
+}     

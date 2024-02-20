@@ -5,8 +5,8 @@
   "main": "src/app.js",
   "type": "module",
   "scripts": {
-    "test": "mocha -t 50000 test/test.test.js",
-    "start": "nodemon src/app.js",
+    "test": "mocha --exit -t 50000 test/carts.test.js",
+    "start": "nodemon --watch src/app.js",
     "dev": "node src/app.js"
   },
   "keywords": [],
@@ -26,6 +26,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.3",
     "mongoose-paginate-v2": "^1.7.4",
+    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.8",
     "nodemon": "^3.0.1",
     "nstall": "^0.2.0",

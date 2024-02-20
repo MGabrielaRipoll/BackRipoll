@@ -35,16 +35,13 @@ export const createOneProduc = async (req, res) => {
     if (!title || !description || !price || !code || !stock || ! category) {
         // return res.status(400).json({ message: "Some data is missing" });
         return CustomError.generateError(ErrorMessages.ALL_FIELDS_REQUIRED,400,ErrorName.ALL_FIELDS_REQUIRED);
-
     }
   
     try {
         const existingProduct = await Manager.findByCode(code);
-            console.log(existingProduct, "validacion");
         if (existingProduct.length >= 1) {
             res.status(500).json({ message: error.message });
         }
-        console.log(req.user, "userrrrrrrrrrrrrrrrrr");
         if (req.user.role === "premium") {
             const newProduct = {...req.body, owner:req.user.mail};
             const response = await createOne(newProduct);
@@ -64,12 +61,10 @@ export const createOneProduc = async (req, res) => {
 export const deleteOneProdAll = async (req, res) => {
     const { id } = req.body;
     const producForDelette = await findById(id);
-    console.log(id, producForDelette, "ijjfdhafuhfioJWFIJIwo");
     try {
         if (req.user.role === "premium") {
             if (producForDelette.owner === req.user.mail) {
                 const response = await deleteOneProduct(id);
-                console.log("response", producForDelette.owner === req.user.mail);
                 if (!response) {
                     return res.status(404).json({ message: "Product not found" });
                 }
@@ -85,22 +80,17 @@ export const deleteOneProdAll = async (req, res) => {
             return res.status(200).json({ message: "Product deleted" });
         }
     } catch (error) {
-        console.error("Error:", error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
 
 
 export const updateProducts = async (req, res) => {
-    const { id } = req.body;
+    const { _id } = req.body;
     try {
-        const response = await updateProduct(id, req.body);
+        const response = await updateProduct(_id, req.body);
         if (!response) {
             return CustomError.generateError(ErrorMessages.PRODUCT_NOT_FOUND,404, ErrorName.PRODUCT_NOT_FOUND);
-
-            // return res
-            // .status(404)
-            // .json({ message: "Product not found with the id provided" });
         }
         res.status(200).json({ message: "Product updated", response });
     } catch (error) {
