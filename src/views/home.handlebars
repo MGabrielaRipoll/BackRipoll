@@ -8,13 +8,24 @@
 
 {{#if user}}
     <div class="userDiv">
-        <h2>WELCOME {{name}}</h2>
-        <h4>Your email is: {{email}} </h4>
+        <div class="user-info">
+            {{#if avatar}}
+                <img src="/docs/profiles/{{avatar}}" alt="User Profile Image">
+            {{else}}
+                <img src="/docs/profiles/avatarrandom.png" alt="User Profile Image">
+            {{/if}}
+            <div class="user-details">
+                <h2>WELCOME {{user.name}}</h2>
+                <h4>Your email is: {{user.email}} </h4>
+            </div>
+        </div>
+        {{!-- <h2>WELCOME {{name}}</h2>
+        <h4>Your email is: {{email}} </h4> --}}
         <button class="boton"><a href="/api/session/signout">SIGN OUT</a></button>
         <input type="hidden" name="token" id="token" value="{{token}}">
         <button class="boton"><a href="/api/views/realTimeProducts">Access DBA</a></button>
+        <button class="boton"><a href="/api/views/users">ADMIN</a></button>
         <button class="boton"><a href="/api/views/users/{{uid}}">Mi perfil</a></button>
-
     </div>
 
 

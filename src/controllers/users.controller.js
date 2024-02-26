@@ -1,6 +1,7 @@
-import { findByEmail, findById, createOne, updateUser, updatePerfilDoc } from "../service/user.service.js";
+import { findAll, findByEmail, findById, createOne, updateUser, updatePerfilDoc, deleteOneUser, updatePerfilFoto } from "../service/user.service.js";
 import { jwtValidation } from "../middlewares/jwt.middlewares.js";
 import { authMiddleware } from "../middlewares/auth.middlewares.js";
+import { transporter } from "../utils/nodemailer.js"
 import passport from "passport";
 import CustomError from "../errors/error.generate.js";
 import { ErrorMessages, ErrorName } from "../errors/errors.enum.js";
@@ -29,6 +30,30 @@ export const findUserByEmail = async (req, res) => {
     res.status(200).json({ message: "User found", user });
 };
 
+export const findAllUsers = async (req, res) => {
+    const users = await findAll();
+    return users
+}
+
+export const deleteOneUsers = async (req, res) => {
+    const {id} = req.body;
+    const user = await findById(id);
+    const ahora = new Date();
+    const diferenciaEnDias = (ahora - user.last_connection) / (1000 * 60 * 60 * 24);
+    if (diferenciaEnDias >= 2 ) {
+        const userdelete = await deleteOneUser(id);
+        await transporter.sendMail({
+            from: "mariagabriela.ripoll@gmail.com",
+            to: email,
+            subject: "Perfil en Pelimania",
+            html: `<b>Estimado, debido a su falta de actividad en nuestra plataforma hemos eliminado su usuario, si desea seguir beneficiandose de nuestros productos, por favor registrese nuevamente. LO ESPERAMOS!! Atte. Pelimania</b>`,
+        });
+        return userdelete
+    } else {
+        return error
+    }    
+};
+
 export const createUser =  async (req, res) => {
     const { name, lastName, email, password } = req.body;
     if (!name || !lastName || !email || !password || !role) {
@@ -48,7 +73,6 @@ export const updateUserNow = async (req, res) => {
     try {        
     const userToUpdate = await findById(uid);
  
-    console.log(userToUpdate.documents[0], "por Dios");
     if (!userToUpdate) {
         return res.status(404).json({ message: "User not found" });
     }
@@ -85,10 +109,22 @@ export const updatePerfil = async (req,res) => {
         const dni = req.files.dni;
         const address = req.files.address;
         const bank = req.files.bank;
-        console.log(dni, address, bank, "vamossssss");
         const response = await updatePerfilDoc(uid, { dni, address, bank });
         res.status(201).json({ message: "Documents add" });
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });
     }
-}     
+}    
+
+export const updateFoto = async (req, res) => {
+    const { uid } = req.params;
+    try {
+        const user = await findById(uid);
+        const foto = req.files.profiles;
+        const response = await updatePerfilFoto(uid, {foto})
+        console.log(response, "porfaaaaaa");
+        res.status(201).json({ message: "Photo add" });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error" });
+    }
+}

@@ -14,9 +14,11 @@
     <input type="submit" value="Enviar">
 </form>
 <br>
+<form action="/api/users/{{uid}}/fotoDePerfil" enctype="multipart/form-data" method="post">
+    IMAGEN DE PERFIL:<input type="file" name="profiles" id="profiles">
+    <input type="submit" value="Enviar">
+</form>
 <br>
-
-
 <form id="changeRoleForm">
         <label for="email">Email de Usuario:</label>
         <input type="text" id="email" name="email" required>

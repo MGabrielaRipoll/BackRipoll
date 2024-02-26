@@ -115,7 +115,7 @@ router.post("/restaurarviamail", async (req, res) => {
         await transporter.sendMail({
             from: "mariagabriela.ripoll@gmail.com",
             to: email,
-            subject: "Recuperacion de contraseña",
+            subject: "Recuperacion de contraseña en Pelimania",
             html: `<b>Por favor haga clic en el siguiente link para restablecer su contraseña http://localhost:8080/api/views/restaurar?token=${token} </b>`,
         });
         res.status(200).json({ success: 'Mail enviado con éxito' });

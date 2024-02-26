@@ -297,6 +297,29 @@ async function changeUserRole(uid) {
         console.error('Request error:', error.message);
     }
 }
+async function changeRole(uid) {
+    const email = document.getElementById('email').value;
+    const userid = document.getElementById('uid').value;
+    const selectedRole = document.getElementById('role').value;
+    console.log(uid, userid, "uid front", role);
+    try {
+        const response = await fetch(`/api/users/premium/${uid}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ role: selectedRole , email: email }),
+        });
+        if (!response.ok) {
+            console.error('Error changing role:', response.status, response.statusText);
+            return;
+        }
+        const result = await response.json();
+        console.log('Role changed successfully:', result);
+    } catch (error) {
+        console.error('Request error:', error.message);
+    }
+}
 async function buy (cartId) {
     const token = document.getElementById('token').value;
     console.log("token front", token);

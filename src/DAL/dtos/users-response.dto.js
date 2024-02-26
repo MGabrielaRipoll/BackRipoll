@@ -5,6 +5,7 @@ export default class UsersResponse {
         this.last_name = user.name.split(" ")[1];
         this.email = user.email;
         this.orders = user.orders;
-        this.cartId = user.cartId
+        this.cartId = user.cartId;
+        this.avatar = user.avatar;
     }
 }

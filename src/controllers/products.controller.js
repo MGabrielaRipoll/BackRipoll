@@ -3,6 +3,7 @@ import CustomError from "../errors/error.generate.js";
 import { ErrorMessages, ErrorName } from "../errors/errors.enum.js";
 import { jwtValidation } from "../middlewares/jwt.middlewares.js";
 import { findAll, findById, createOne, deleteOneProduct, updateProduct } from "../service/product.service.js";
+import { transporter } from "../utils/nodemailer.js";
 
 export const findProductById = async (req, res) => {
     const { pid } = req.params;
@@ -68,6 +69,12 @@ export const deleteOneProdAll = async (req, res) => {
                 if (!response) {
                     return res.status(404).json({ message: "Product not found" });
                 }
+                await transporter.sendMail({
+                    from: "mariagabriela.ripoll@gmail.com",
+                    to: email,
+                    subject: "Producto Eliminado en Pelimania",
+                    html: `<b>Estimado, su producto ${producForDelette.title}, ha sido eliminado de nuestra pagina, ante cualquier duda o reclamo comuniquese con nosotros. Atte. Pelimania </b>`,
+                });
                 return res.status(200).json({ message: "Product deleted" });
             } else {
                 return res.status(500).json({ message: "This product was not created by you" });

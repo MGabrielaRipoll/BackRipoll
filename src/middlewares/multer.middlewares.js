@@ -4,7 +4,6 @@ import { __dirname } from "../utils/utils.js"
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        console.log("multerrrrrrrrrr");
         if (file.fieldname === "profiles") {
         return cb(null, `${__dirname}/public/docs/profiles`);
         } else if (file.fieldname === "products") {

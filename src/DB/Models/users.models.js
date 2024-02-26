@@ -38,6 +38,14 @@ const usersSchema = new mongoose.Schema({
         ],
         default: [],
     },
+    avatar : {
+        type: [
+            {
+                name: String,
+                reference: String,
+            }
+        ]
+    },
     last_connection :{
         type: Date,
     }

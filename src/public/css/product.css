@@ -23,6 +23,17 @@ body {
   h2 {
     color: #12034d;
   }
+  .user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-info img {
+    width: 50px; 
+    height: 50px; 
+    border-radius: 50%;
+    margin-right: 10px; 
+}
   .login-container {
     background-color: #f3efef;
     padding: 20px;

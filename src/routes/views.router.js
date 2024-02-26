@@ -11,6 +11,8 @@ import cookieParser from 'cookie-parser';
 import { generateProduct } from "../faker.js";
 import config from "../config/config.js";
 import { paginate } from "mongoose-paginate-v2";
+import path from 'path';
+
 
 
 const router = Router();
@@ -24,39 +26,20 @@ router.get("/home", passport.authenticate('current', { session: false }), async 
         const products = await Manager.findAll(req.query);
         const { limit  } = req.params;
         const productsFinal = products.info.results;
-        // console.log("productos... ",products.info);
         const clonedProducts = productsFinal.map(product => Object.assign({}, product._doc));
         const result = clonedProducts;
         const {pages, nextPage, prevPage}  = products.info;
         const sort = req.query.orders;
         const cart = await Cart.findCById(req.user.cartId)
-        console.log(nextPage, prevPage, pages, "paginacion");
-        res.render("home",  { cartId: req.user.cartId, uid: req.user.id, quantity: cart.totalProducts, user: req.user, name: req.user.name, email : req.user.email, products: result, sort: sort, pages : pages, limit:limit, nextPage: nextPage,  prevPage: prevPage, style: "product" } );
+        const foto = req.user.avatar.map(item => item.reference);
+        const avatar = foto.map(foto => path.basename(foto));
+        res.render("home",  { avatar : avatar, cartId: req.user.cartId, uid: req.user.id, quantity: cart.totalProducts, user: req.user, name: req.user.name, email : req.user.email, products: result, sort: sort, pages : pages, limit:limit, nextPage: nextPage,  prevPage: prevPage, style: "product" } );
     } catch (error) {
         // console.error(error);
         res.status(500).send("Error interno del servidor");
     }
 });
-// router.get("/home", async (req, res) => {
 
-//     if (!req.cookies.token) {
-//         return res.redirect("/api/views/login");
-//     }
-    
-//     console.log(req.user);
-//     try {
-//         const products = await Manager.findAll(req.query);
-//         const productsFinal = products.info.results;
-//         const clonedProducts = productsFinal.map(product => Object.assign({}, product._doc));
-//         const result = clonedProducts;
-//         const paginate = products.info.pages;
-//         const sort = req.query.orders;
-//         res.render("home",  { cartId: req.user.cartId, user: req.user, name: req.user.name, email : req.user.email, products: result, paginate: paginate, sort: sort, style:"product"} );
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).send("Error interno del servidor");
-//     }
-// });
 
 router.get("/login", (req, res) => {
     // console.log("cookies", req.cookies.token);
@@ -88,6 +71,13 @@ router.get("/users/:uid", (req, res) => {
     const { uid } = req.params;
     res.render("usersPerfil", { uid: uid, style: "product" });
 });
+
+router.get("/users", passport.authenticate("current", {session:false}), authMiddleware(["admin"]),  async (req, res) => {
+    const users = await Users.findAll();
+    console.log(users, "user vistas");
+    res.render("usersAll", { users: users, style: "product" });
+});
+
 
 router.get("/error", (req, res) => {
     res.render("error", {style:"product"});

@@ -125,6 +125,7 @@ passport.use("github",
                     email: profile.emails[0].value,
                     password: " ",
                     cartId: cart._id,
+                    last_connection: new Date()
                 };
                 logger.info(infoUser);
                 const createdUser = await Users.createOne(infoUser);
@@ -162,7 +163,9 @@ passport.use("google",
                     lastName: profile._json.family_name,
                     email: profile._json.email,
                     password: " ",
-                    cartId: cart._id,                };
+                    cartId: cart._id,  
+                    last_connection: new Date()
+                };
                 const createdUser = await Users.createOne(infoUser);
                 done(null, createdUser);
                 } catch (error) {
