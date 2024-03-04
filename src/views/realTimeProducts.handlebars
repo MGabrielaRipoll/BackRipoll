@@ -10,6 +10,7 @@
     </h1>
 </header>
 <body>
+
     <h3>BASE DE DATOS DE PRODUCTOS EN TIEMPO REAL</h3>
     
     <h4>Si lo que desea es dar de alta un producto, ingrese todos los datos del mismo y presione AGREGAR</h4>
@@ -57,11 +58,14 @@
         </div>
     {{else}} 
         <p>No products available.</p>
-    {{/if}}     
+    {{/if}} 
+    <button class="boton_volver"><a href="/api/views/home">VOLVER</a></button>
+    
     {{!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
     {{!-- <script src="/socket.io/socket.io.js"></script> --}}
     {{!-- <script src="/js/index.js"></script> --}}
     <script src="/functions.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 
 </body>

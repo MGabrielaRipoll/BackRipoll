@@ -22,10 +22,10 @@
     <button class="boton" id="add-to-cart-btn" data-product-id="{{product._doc._id}}" onclick="addToCart('{{cartId}}', '{{product._doc._id}}')">Add to Cart</button>
     <input type="hidden" id="pid" value="{{ product._doc._id }}">
     <button class="boton"><a href="/api/views/home">VOLVER</a></button>
-    <input type="hidden" id="pid" value="{{ product._doc._id }}">
 
     
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 {{!-- <script src="/functionsCart.js"></script> --}}
 <script src="/functions.js"></script>

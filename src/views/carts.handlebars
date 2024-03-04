@@ -7,6 +7,7 @@
 </header>
 <h2>CART CONTENT</h2>
 
+<input type="hidden" name="cartId" id="cartId" value="{{cartId}}">
 
 {{#if products.length}}
     <div class="product-cards">
@@ -27,13 +28,17 @@
         {{!-- <h2> TOTAL PRICE: {{cart.totalPrice}}</h2> --}}
         <input type="hidden" name="token" id="token" value="{{token}}">
 
-        <button class="add-to-cart-btn" data-product-id="{{product._id}}" onclick="deleteAll('{{cartId}}')">Remove all to Cart</button>
-        <button class="buy" data-token="{{token}}" onclick="buy('{{cartId}}')">COMPRAR</button>
+
+        <button class="boton" data-product-id="{{product._id}}" onclick="deleteAll('{{cartId}}')">Remove all to Cart</button>
+        <button class="boton" data-token="{{token}}" onclick="buy('{{cartId}}')">COMPRAR</button>
 
     </div>
 
 {{else}}
     <p>No products available.</p>
 {{/if}}
+<button class="boton_volver"><a href="/api/views/home">VOLVER</a></button>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script src="/functions.js"></script>

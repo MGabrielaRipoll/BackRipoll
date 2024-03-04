@@ -23,6 +23,41 @@ body {
   h2 {
     color: #12034d;
   }
+  .boton_volver {
+    background-color:green;
+    color: white; 
+    margin: 10px;
+    border: none; 
+    padding: 10px 20px;  
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;  
+}
+
+.boton_volver:hover {
+    background-color:rgb(1, 41, 1); 
+}
+.boton_delete {
+  background-color: red;
+  color: white; 
+  margin: 10px;
+  border: none; 
+  padding: 10px 20px;  
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;  
+}
+
+.boton_delete:hover {
+  background-color: rgb(59, 2, 2); 
+}
+
   .user-info {
     display: flex;
     align-items: center;

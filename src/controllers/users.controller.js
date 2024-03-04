@@ -5,6 +5,7 @@ import { transporter } from "../utils/nodemailer.js"
 import passport from "passport";
 import CustomError from "../errors/error.generate.js";
 import { ErrorMessages, ErrorName } from "../errors/errors.enum.js";
+import mongoose from "mongoose";
 
 
 export const findUserById = (req, res) => {
@@ -35,23 +36,37 @@ export const findAllUsers = async (req, res) => {
     return users
 }
 
-export const deleteOneUsers = async (req, res) => {
-    const {id} = req.body;
-    const user = await findById(id);
-    const ahora = new Date();
-    const diferenciaEnDias = (ahora - user.last_connection) / (1000 * 60 * 60 * 24);
-    if (diferenciaEnDias >= 2 ) {
-        const userdelete = await deleteOneUser(id);
+export const oldUsers = async (req, res) => {
+    try {
+        const users = await findAll();
+        const ahora = new Date();
+        const oldUsersList = [];
+        for (let index = 0; index < users.length; index++) {
+            const element = users[index];
+            const diferenciaEnDias = (ahora - element.last_connection) / (1000 * 60 * 60 * 24);
+            if (diferenciaEnDias >= 2) {
+                oldUsersList.push(element)
+            }
+        }
+        return oldUsersList;
+    } catch (error) {
+        console.error("Error en oldUsers:", error);
+        res.status(500).send("Error interno del servidor");
+    }
+};
+
+export const deleteUsers = async (req, res) => {
+    const {users} = req.body;
+    for (let index = 0; index < users.length; index++) {
+        const element = users[index];
+        const result = deleteOneUser(element._id);
         await transporter.sendMail({
             from: "mariagabriela.ripoll@gmail.com",
-            to: email,
+            to: element.email,
             subject: "Perfil en Pelimania",
             html: `<b>Estimado, debido a su falta de actividad en nuestra plataforma hemos eliminado su usuario, si desea seguir beneficiandose de nuestros productos, por favor registrese nuevamente. LO ESPERAMOS!! Atte. Pelimania</b>`,
         });
-        return userdelete
-    } else {
-        return error
-    }    
+    }
 };
 
 export const createUser =  async (req, res) => {
@@ -122,7 +137,6 @@ export const updateFoto = async (req, res) => {
         const user = await findById(uid);
         const foto = req.files.profiles;
         const response = await updatePerfilFoto(uid, {foto})
-        console.log(response, "porfaaaaaa");
         res.status(201).json({ message: "Photo add" });
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });

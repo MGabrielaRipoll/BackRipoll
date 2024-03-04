@@ -1,0 +1,30 @@
+<header>
+    <h1>
+        PELIMANIA "LA RIPOLL"
+    </h1>
+</header>
+<body>
+    <h2>Estimado Administrador, por favor mire bien antes de confirmar los cambios, ya que estos seran permanenes.
+    </h2>
+
+    <form id="changeRoleForm">
+        <h4>USUARIO : {{email}}</h4>
+        <h4>CATEGORIA: {{role}}</h4>
+
+        <label for="role">Nuevo Categoria:</label>
+        <select id="role" name="role">
+            <option value="user">Usuario</option>
+            <option value="premium">Premium</option>
+        </select>
+        <input type="hidden" name="email" id="email" value="{{email}}">
+        <input type="hidden" name="uid" id="uid" value="{{id}}">
+        <button type="button" onclick="changeRole('{{id}}')">Cambiar Categoria</button>
+    </form>
+        
+    <button class="boton_volver"><a href="/api/views/users">VOLVER</a></button>
+
+</body>
+<script src="/functions.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+

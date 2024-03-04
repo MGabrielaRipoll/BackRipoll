@@ -22,15 +22,16 @@
 <form id="changeRoleForm">
         <label for="email">Email de Usuario:</label>
         <input type="text" id="email" name="email" required>
-        
         <label for="role">Nuevo Rol:</label>
         <select id="role" name="role">
             <option value="user">Usuario</option>
             <option value="premium">Premium</option>
         </select>
         <input type="hidden" name="uid" id="uid" value="{{uid}}">
-
         <button type="button" onclick="changeUserRole('{{uid}}')">Cambiar Rol</button>
 </form>
+    <button class="boton_volver"><a href="/api/views/home">VOLVER</a></button>
+
 <script src="/functions.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

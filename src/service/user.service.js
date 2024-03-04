@@ -18,6 +18,7 @@ export const deleteOneUser = (id) => {
     return user;
 };
 
+
 export const findByEmail = (id) => {
     const user = Users.findByEmail(id);
     return user;
@@ -64,7 +65,6 @@ export const updatePerfilFoto = async (id, {foto}) => {
             }]:[],
         ]
     });
-    console.log(userPerfil, "pleaseeeeeee");
     return userPerfil;
 } 
 export const createOne = (obj) => {

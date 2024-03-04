@@ -2,7 +2,7 @@ import { Router } from "express";
 import upload from "../middlewares/multer.middlewares.js";
 import { authMiddleware } from '../middlewares/auth.middlewares.js';
 import passport from "passport";
-import { findAllUsers, findUserById, updateUserNow, updatePerfil, deleteOneUsers, updateFoto } from "../controllers/users.controller.js";
+import { findAllUsers, findUserById, updateUserNow, updatePerfil, deleteUsers, updateFoto } from "../controllers/users.controller.js";
 
 const router = Router();
 
@@ -11,8 +11,8 @@ router.get(
 );
 
 router.delete(
-  "/", passport.authenticate("current", {session:false}), authMiddleware(["admin"]), deleteOneUsers
-)
+  "/", deleteUsers
+);
 
 router.get(
   "/:uid", findUserById

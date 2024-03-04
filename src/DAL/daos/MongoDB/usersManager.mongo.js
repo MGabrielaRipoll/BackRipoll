@@ -10,9 +10,14 @@ class UsersManager {
         return response;
     }
 
-    async deleteOne() {
-        const response = await usersModel.deleteOne(id);
+    async deleteOne(id) {
+        const response = await usersModel.deleteOne({ _id: id });
         return response
+    }
+
+    async deleteByEmail(email) {
+        const response = await usersModel.deleteOne({ email: email });
+        return response;
     }
 
     async findByEmail(email) {

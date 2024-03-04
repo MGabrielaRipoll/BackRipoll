@@ -1,3 +1,4 @@
+
 const restaurarviamail = async (paramEmail) =>{
     const token = document.getElementById('token').value;    
     const email = document.getElementById('email').value;
@@ -65,16 +66,12 @@ const restaurar = async () =>{
 
 const addToCart = async (cartId, _id) => {
     const id = document.getElementById('pid').value;
-
     const url = `http://localhost:8080/api/cart/${cartId}/products/${id}`;
     const data = {
         cartId: cartId,
         _id: _id,
-
     };
-
     console.log("cart", cartId, "product", _id);
-
     try {
         const response = await fetch(url, {
             method: "POST",
@@ -85,12 +82,20 @@ const addToCart = async (cartId, _id) => {
         });
 
         if (!response.ok) {
-            console.error("Error adding product to cart:", response.status, response.statusText);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'You cannot add your own product to the cart.',
+            });
+            // console.error("Error adding product to cart:", response.status, response.statusText);
             return;
         }
-
+        Swal.fire({
+            icon: 'success',
+            title: 'Product Added',
+            text: 'The product has been added to your cart successfully.',
+        });
         const result = await response.json();
-        console.log("Product added to cart:", result);
         location.reload(true);
 
     } catch (error) {
@@ -100,14 +105,28 @@ const addToCart = async (cartId, _id) => {
 
 
 const deleteOne = async (cartId, _id) => {
+    const cid = document.getElementById('cartId').value;
+    const confirmResult = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to delete this product from your cart.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel',
+        confirmButtonColor: '#d33', 
+        reverseButtons: true
+    });
 
-    const url = `http://localhost:8080/api/cart/${cartId}/products/${_id}`;
+    if (!confirmResult.isConfirmed) {
+        return; 
+    }
+
+    const url = `http://localhost:8080/api/cart/${cid}/products/${_id}`;
     const data = {
         cartId: cartId,  
         _id: _id,
     };
 
-    console.log("cartId", cartId, "product", _id);
 
     try {
         const response = await fetch( url, {
@@ -122,9 +141,13 @@ const deleteOne = async (cartId, _id) => {
             console.error("Error in delete product to cart:", response.status, response.statusText);
             return;
         }
+        Swal.fire({
+            icon: 'success',
+            title: 'Product Deleted',
+            text: 'The product has been successfully deleted from your cart.',
+        });
 
         const result = await response.json();
-        console.log("Product delete to cart:", result);
         location.reload(true);
 
     } catch (error) {
@@ -134,14 +157,13 @@ const deleteOne = async (cartId, _id) => {
 
 
 const addProductToCart = async (cartId, _id) => {
-   
-    const url = `http://localhost:8080/api/cart/${cartId}/products/${_id}`;
+    const cid = document.getElementById('cartId').value;
+
+    const url = `http://localhost:8080/api/cart/${cid}/products/${_id}`;
     const data = {
-        cartId: cartId, 
+        cartId: cid, 
         _id: _id,
     };
-
-    console.log("cartId", cartId, "product", _id);
 
     try {
         const response = await fetch( url, {
@@ -153,21 +175,42 @@ const addProductToCart = async (cartId, _id) => {
         });
 
         if (!response.ok) {
-            console.error("Error in added product to cart:", response.status, response.statusText);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'You cannot add your own product to the cart.',
+            });
+            // console.error("Error in added product to cart:", response.status, response.statusText);
             return;
         }
-
+        Swal.fire({
+            icon: 'success',
+            title: 'Product Added',
+            text: 'The product has been added to your cart successfully.',
+        });
         const result = await response.json();
-        console.log("Product add to cart:", result);
         location.reload(true);
 
     } catch (error) {
-+        console.error("Fetch error:", error.message);
+        console.error("Fetch error:", error.message);
     }
 };
 
 const deleteAll = async (cartId) => {
+    const confirmResult = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to delete alls product from your cart.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete all!',
+        cancelButtonText: 'No, cancel',
+        confirmButtonColor: '#d33', 
+        reverseButtons: true
+    });
 
+    if (!confirmResult.isConfirmed) {
+        return; 
+    }
     const url = `http://localhost:8080/api/cart/${cartId}`;
     const data = {
         cartId: cartId,  
@@ -186,10 +229,12 @@ const deleteAll = async (cartId) => {
             console.error("Error in delete to cart:", response.status, response.statusText);
             return;
         }
-
+        Swal.fire({
+            icon: 'success',
+            title: 'Product Delette',
+            text: 'The products has been successfully deleted from your cart.',
+        });
         const result = await response.json();
-
-        console.log(" delete to cart:", result);
         location.reload(true);
 
     } catch (error) {
@@ -214,9 +259,7 @@ const createOneProduc = async () => {
         code: code,
         category: category,
         thumbail: thumbail
-
     };
-
     const url = 'http://localhost:8080/api/products/';
     try {
     const response = await fetch(url, {
@@ -228,25 +271,85 @@ const createOneProduc = async () => {
         body: JSON.stringify(data),
     });
     if (!response.ok) {
-        // Handle non-successful responses here
         console.error("Error in add the product:", response.status, response.statusText);
         return;
     }
+    Swal.fire({
+        icon: 'success',
+        title: 'Product Created',
+        text: 'The product has been successfully created.',
+        confirmButtonColor: '#28a745'
+    });
     const result = await response.json();
-
-    console.log(" product add:", result);
     location.reload(true);
 
     } catch (error) {
-    // Handle fetch errors here
     console.error("Fetch error:", error.message);
 }
 };
 
+const deleteUser = async (users1) => {
+    const usersOld = JSON.parse(document.getElementById('users1').value);
+    const confirmResult = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to delete user.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete all!',
+        cancelButtonText: 'No, cancel',
+        confirmButtonColor: '#d33', 
+        reverseButtons: true
+    });
+
+    if (!confirmResult.isConfirmed) {
+        return; 
+    }
+    const url = `http://localhost:8080/api/users`;
+    data = {
+        users: usersOld
+    }
+    try {
+        const response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+            if (!response.ok) {
+                console.error("Error in eliminacion the users:", response.status, response.statusText);
+                return;
+            }
+            Swal.fire({
+                icon: 'success',
+                title: 'User Delette',
+                text: 'The user has been successfully deleted.',
+            });
+            const result = await response.json();
+        
+        } catch (error) {
+            console.error("Fetch error:", error.message);        
+        }
+    }
+
+
 const deleteOneProdAll = async () => {
     const id = document.getElementById('id').value;
     const token = document.getElementById('token').value;
+    const confirmResult = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to delete this product.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete all!',
+        cancelButtonText: 'No, cancel',
+        confirmButtonColor: '#d33', 
+        reverseButtons: true
+    });
 
+    if (!confirmResult.isConfirmed) {
+        return; 
+    }
     const url = `http://localhost:8080/api/products/${id}`;
     try {
     const response = await fetch(url, {
@@ -258,13 +361,20 @@ const deleteOneProdAll = async () => {
         body: JSON.stringify({ id: id }),
     });
     if (!response.ok) {
-        // Handle non-successful responses here
-        console.error("Error in eliminacion the product:", response.status, response.statusText);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'You cannot delete a product you have not added.',
+        });
+        // console.error("Error in eliminacion the product:", response.status, response.statusText);
         return;
     }
+    Swal.fire({
+        icon: 'success',
+        title: 'Product Delette',
+        text: 'The product has been successfully deleted.',
+    });
     const result = await response.json();
-
-    console.log(" product eliminado:", result);
     location.reload(true);
     } catch (error) {
         console.error("Fetch error:", error.message);        
@@ -275,8 +385,6 @@ async function changeUserRole(uid) {
     const email = document.getElementById('email').value;
     const userid = document.getElementById('uid').value;
     const selectedRole = document.getElementById('role').value;
-    console.log(uid, userid, "uid front", role);
-
     try {
         const response = await fetch(`/api/users/premium/${uid}`, {
             method: 'PUT',
@@ -290,9 +398,15 @@ async function changeUserRole(uid) {
             console.error('Error changing role:', response.status, response.statusText);
             return;
         }
-
+        Swal.fire({
+            icon: 'success',
+            title: 'Product Created',
+            text: 'Role changed successfully',
+            confirmButtonColor: '#28a745'
+        });
         const result = await response.json();
-        console.log('Role changed successfully:', result);
+        location.reload(true);
+
     } catch (error) {
         console.error('Request error:', error.message);
     }
@@ -301,9 +415,8 @@ async function changeRole(uid) {
     const email = document.getElementById('email').value;
     const userid = document.getElementById('uid').value;
     const selectedRole = document.getElementById('role').value;
-    console.log(uid, userid, "uid front", role);
     try {
-        const response = await fetch(`/api/users/premium/${uid}`, {
+        const response = await fetch(`/api/users/premium/${userid}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -314,15 +427,21 @@ async function changeRole(uid) {
             console.error('Error changing role:', response.status, response.statusText);
             return;
         }
+        Swal.fire({
+            icon: 'success',
+            title: 'Product Created',
+            text: 'Role changed successfully',
+            confirmButtonColor: '#28a745'
+        });   
         const result = await response.json();
-        console.log('Role changed successfully:', result);
+        location.reload(true);
+
     } catch (error) {
         console.error('Request error:', error.message);
     }
 }
 async function buy (cartId) {
     const token = document.getElementById('token').value;
-    console.log("token front", token);
     try {
         const response = await fetch(`/api/cart/${cartId}/purchase`, {
             method: 'GET',
@@ -336,8 +455,13 @@ async function buy (cartId) {
             console.error('Error', response.status, response.statusText);
             return;
         }
+        Swal.fire({
+            icon: 'success',
+            title: 'Purchase Successful',
+            text: 'Your purchase was successful. Thank you!',
+            confirmButtonColor: '#28a745', 
+        });
         const result = await response.json();
-        console.log('Buy complete', result);
     } catch (error) {
         console.error('Request error:', error.message);
     }   

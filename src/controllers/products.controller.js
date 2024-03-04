@@ -1,4 +1,5 @@
 import { Manager } from "../DAL/daos/MongoDB/productManager.mongo.js";
+import { Users } from "../DAL/daos/MongoDB/usersManager.mongo.js";
 import CustomError from "../errors/error.generate.js";
 import { ErrorMessages, ErrorName } from "../errors/errors.enum.js";
 import { jwtValidation } from "../middlewares/jwt.middlewares.js";
@@ -62,25 +63,27 @@ export const createOneProduc = async (req, res) => {
 export const deleteOneProdAll = async (req, res) => {
     const { id } = req.body;
     const producForDelette = await findById(id);
+    const user = await Users.findByEmail(producForDelette.owner);
+    
     try {
         if (req.user.role === "premium") {
-            if (producForDelette.owner === req.user.mail) {
+            if (producForDelette.owner === user.email) {
                 const response = await deleteOneProduct(id);
                 if (!response) {
                     return res.status(404).json({ message: "Product not found" });
                 }
-                await transporter.sendMail({
-                    from: "mariagabriela.ripoll@gmail.com",
-                    to: email,
-                    subject: "Producto Eliminado en Pelimania",
-                    html: `<b>Estimado, su producto ${producForDelette.title}, ha sido eliminado de nuestra pagina, ante cualquier duda o reclamo comuniquese con nosotros. Atte. Pelimania </b>`,
-                });
                 return res.status(200).json({ message: "Product deleted" });
             } else {
                 return res.status(500).json({ message: "This product was not created by you" });
             }
         } else {
             const response = await deleteOneProduct(id);
+            await transporter.sendMail({
+                from: "mariagabriela.ripoll@gmail.com",
+                to: user.email,
+                subject: "Producto Eliminado en Pelimania",
+                html: `<b>Estimado, su producto ${producForDelette.title}, ha sido eliminado de nuestra pagina, ante cualquier duda o reclamo comuniquese con nosotros. Atte. Pelimania </b>`,
+            });
             if (!response) {
                 return res.status(404).json({ message: "Product not found" });
             }

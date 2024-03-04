@@ -12,6 +12,8 @@ import { generateProduct } from "../faker.js";
 import config from "../config/config.js";
 import { paginate } from "mongoose-paginate-v2";
 import path from 'path';
+// import { log } from "console";
+import { oldUsers } from "../controllers/users.controller.js";
 
 
 
@@ -33,6 +35,7 @@ router.get("/home", passport.authenticate('current', { session: false }), async 
         const cart = await Cart.findCById(req.user.cartId)
         const foto = req.user.avatar.map(item => item.reference);
         const avatar = foto.map(foto => path.basename(foto));
+        // console.log(clonedProducts, "probando");
         res.render("home",  { avatar : avatar, cartId: req.user.cartId, uid: req.user.id, quantity: cart.totalProducts, user: req.user, name: req.user.name, email : req.user.email, products: result, sort: sort, pages : pages, limit:limit, nextPage: nextPage,  prevPage: prevPage, style: "product" } );
     } catch (error) {
         // console.error(error);
@@ -74,19 +77,30 @@ router.get("/users/:uid", (req, res) => {
 
 router.get("/users", passport.authenticate("current", {session:false}), authMiddleware(["admin"]),  async (req, res) => {
     const users = await Users.findAll();
-    console.log(users, "user vistas");
-    res.render("usersAll", { users: users, style: "product" });
+
+    const clonedUsers = users.map(user => Object.assign({}, user._doc));
+    res.render("usersAll", { users: clonedUsers, style: "product" });
 });
 
+router.get("/userOld",  async (req, res) => {
+    const users = await oldUsers();
+    const users1 = JSON.stringify(users);
+    const clonedUsers = users.map(user => Object.assign({}, user._doc));
+    res.render("userOld", { users: clonedUsers, users1: users1, style: "product" });
+});
 
 router.get("/error", (req, res) => {
     res.render("error", {style:"product"});
 });
 
+router.get("/adminUsers/:uid", async (req, res) => {
+    const { uid } = req.params;
+    const user = await Users.findById(uid);
+    res.render("adminUsers", {email: user.email, role: user.role, id: user._id, style:"product"});
+});
 
 router.get('/carts/:cartId', async (req, res) => {
     const { cartId } = req.params;
-    
     try {
         const cart = await Cart.findCById(cartId);
         if (!cart) {

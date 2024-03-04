@@ -10,28 +10,25 @@
     </h1>
 </header>
 <body>
-    
     {{#if users.length}}
         <div class="product-cards">
             {{#each users}}
                 <div class="product-card">
                     <h4>NOMBRE: {{name}}</h4>
                     <h4 id="email">EMAIL: {{email}}</h4>
-                    <h4>CATEGORIA: {{role}}</h4>
-                    <button class="boton"><a href="/api/views/adminUsers/{{_id}}">MODIFICAR</a></button>
-
-                    {{!-- <button onclick="location.href=/api/views/adminUsers/{{_id}}" class="boton">Cambiar Licencias</button> --}}
                 </div> 
             {{/each}}
         </div>
     {{else}} 
         <p>No users available.</p>
-    {{/if}}    
-    <button class="boton"><a href="/api/views/userOld">USERS INACTIVOS</a></button>
+    {{/if}}   
+    <input type="hidden" class="users1" id="users1" value="{{users1}}">
 
-    <button class="boton_volver"><a href="/api/views/home">VOLVER</a></button>
+    <button class="boton_delete"  onclick="deleteUser()">DELETE</button>
+
+    <button class="boton_volver"><a href="/api/views/users">VOLVER</a></button>
 
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script src="/functions.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

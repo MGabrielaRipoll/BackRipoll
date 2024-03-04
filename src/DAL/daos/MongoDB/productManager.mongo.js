@@ -34,11 +34,8 @@ class ProductsManager {
         return result;
     }
     async findByCode(code) {
-        console.log("Holisss", code);
         const products = await productsModel.find();
-        console.log(products, "me pudris");
         const result = products.filter(product => product.code === parseInt(code));
-        console.log(result, code, "whats");
         return result;
     }
     async findById(id) {
