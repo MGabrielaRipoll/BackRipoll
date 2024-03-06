@@ -12,7 +12,6 @@ class CartsManager {
     async findCById(id) {
         const result = await cartsModel.findById(id)    
         .populate('products.product');
-        console.log("result",result);
         return result;
     }
 

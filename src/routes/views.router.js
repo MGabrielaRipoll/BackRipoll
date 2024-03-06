@@ -14,6 +14,7 @@ import { paginate } from "mongoose-paginate-v2";
 import path from 'path';
 // import { log } from "console";
 import { oldUsers } from "../controllers/users.controller.js";
+import { Ticket } from "../DAL/daos/MongoDB/ticketManager.mongo.js";
 
 
 
@@ -113,11 +114,12 @@ router.get('/carts/:cartId', async (req, res) => {
         res.status(500).send('Error interno del servidor');
     }
 });
-router.get('/carts/:cartId/purchase', async (req, res) => {
+router.get('/purchase', async (req, res) => {
     try {
-        const {cartId} = req.params;
-        const cart = await Cart.findCById(cartId);
-        res.render ('ticket', {cart: cart, cartId : cartId});
+        const secretKeyJwt = config.secret_jwt; 
+        const ticket = req.cookies.ticketId;       
+        const ticketDecod = await Ticket.findById(ticket);
+        res.render ("ticket", { comprador : ticketDecod.purchaser, code : ticketDecod.code , style : "product"});
     } catch (error) {
         res.status(500).send('Error interno del servidor');
     }});

@@ -455,12 +455,13 @@ async function buy (cartId) {
             console.error('Error', response.status, response.statusText);
             return;
         }
-        Swal.fire({
-            icon: 'success',
-            title: 'Purchase Successful',
-            text: 'Your purchase was successful. Thank you!',
-            confirmButtonColor: '#28a745', 
-        });
+        if (result.availableProducts && result.availableProducts.length > 0) {
+            // Purchase was successful, redirect to a new view, e.g., "/ticket"
+            window.location.href = "/api/views/ticket";
+        } else {
+            // Handle cases where the purchase was not successful
+            console.error('Purchase not successful:', result.unavailableProducts);
+        };
         const result = await response.json();
     } catch (error) {
         console.error('Request error:', error.message);

@@ -120,13 +120,11 @@ export const cartBuy = async (req,res) => {
     
         for (let item of products) {
             if (item.product.stock >= item.quantity) {
-                // disponible
                 availableProducts.push(item);
                 item.product.stock -= item.quantity;
                 await item.product.save();
                 totalAmount += item.quantity * item.product.price;
             } else {
-                //no disponible
                 unavailableProducts.push(item);
             }
         }    
