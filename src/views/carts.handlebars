@@ -28,16 +28,16 @@
         {{!-- <h2> TOTAL PRICE: {{cart.totalPrice}}</h2> --}}
         <input type="hidden" name="token" id="token" value="{{token}}">
 
-
-        <button class="boton" data-product-id="{{product._id}}" onclick="deleteAll('{{cartId}}')">Remove all to Cart</button>
-        <button class="boton" data-token="{{token}}" onclick="buy('{{cartId}}')">COMPRAR</button>
-        <button class="boton"><a href="/api/views/purchase">IR A PAGAR</button></a>
-
     </div>
 
 {{else}}
     <p>No products available.</p>
 {{/if}}
+<div class="contenedor_botones">
+            <button class="boton" data-product-id="{{product._id}}" onclick="deleteAll('{{cartId}}')">Remover todo</button>
+            <button class="boton" data-token="{{token}}" onclick="buy('{{cartId}}')">COMPRAR</button>
+            <button class="boton"><a href="/api/views/purchase">IR A PAGAR</button></a>
+</div>
 <button class="boton_volver"><a href="/api/views/home">VOLVER</a></button>
 
 

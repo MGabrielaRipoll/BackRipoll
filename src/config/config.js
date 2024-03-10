@@ -18,4 +18,5 @@ export default {
     environment: process.env.ENVIRONMENT,
     gmail_user: process.env.GMAIL_USER,
     gmail_password: process.env.GMAIL_PASSWORD,
+    stripe_secret_key: process.env.REACT_APP_STRIPE_KEY,
 };

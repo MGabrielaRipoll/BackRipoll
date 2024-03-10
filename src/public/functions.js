@@ -467,3 +467,24 @@ async function buy (cartId) {
         console.error('Request error:', error.message);
     }   
 }
+
+
+async function pay () {
+    // const token = document.getElementById('token').value;
+    try {
+        const response = await fetch(`/api/payments/payments-intents`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        console.log(response, "front");
+        if (!response.ok) {
+            console.error('Error', response.status, response.statusText);
+            return;
+        }
+        const result = await response.json();
+    } catch (error) {
+        console.error('Request error:', error.message);
+    }   
+}

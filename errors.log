@@ -191,3 +191,28 @@
   timestamp: '2024-02-06T00:49:23.474Z'
 }
 { level: 'error', timestamp: '2024-03-06T21:42:06.769Z' }
+{
+  message: 'Error de conexión',
+  level: 'error',
+  timestamp: '2024-03-07T01:03:31.293Z'
+}
+{
+  message: 'Error de conexión',
+  level: 'error',
+  timestamp: '2024-03-07T01:05:30.072Z'
+}
+{
+  message: 'Error de conexión',
+  level: 'error',
+  timestamp: '2024-03-07T01:10:20.652Z'
+}
+{
+  message: 'Error de conexión',
+  level: 'error',
+  timestamp: '2024-03-07T23:05:40.803Z'
+}
+{
+  message: 'Error de conexión',
+  level: 'error',
+  timestamp: '2024-03-07T23:15:22.571Z'
+}

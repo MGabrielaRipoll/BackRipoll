@@ -1,5 +1,6 @@
 import  express  from 'express';
 import productRouter from './routes/products.router.js'
+import paymentsRouter from './routes/payments.router.js'
 import cartRouter from './routes/cart.router.js'
 import chatsRouter from './routes/chats.router.js'
 import sessionRouter from './routes/session.router.js'
@@ -8,6 +9,7 @@ import usersRouter from "./routes/user.router.js";
 import loggerRouter from "./routes/logger.router.js";
 import mockingRouter from "./routes/mockingproducts.router.js"
 import cookieRouter from './routes/cookie.router.js'
+import cors from "cors"
 import { __dirname } from "../src/utils/utils.js"
 import { Server } from "socket.io";
 import { engine } from "express-handlebars";
@@ -60,6 +62,7 @@ app.use(cookieParser());
 app.engine("handlebars", engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
+app.use('/api/payments', paymentsRouter);
 app.use('/api/products', productRouter);
 app.use('/api/mockingProducts', mockingRouter);
 app.use('/api/cart', cartRouter);
